@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RHYPZRL6QX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      gtag('config', 'G-RHYPZRL6QX');
+    </script>
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Disable automatic phone links (GA IDs look like phone numbers) -->
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Branding images/social share -->
+    <link rel="apple-touch-icon" sizes="180x180" href="https://www.voteamerica.com/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="https://www.voteamerica.com/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://www.voteamerica.com/img/favicon-16x16.png" sizes="16x16">
+    <link rel="mask-icon" href="https://www.voteamerica.com/img/safari-pinned-tab.svg" color="#ff4400">
+    <meta name="description" content="Track your Georgia mail-in ballot">
+    <meta name="og:description" content="Track your Georgia mail-in ballot">
+    <meta name="theme-color" content="#fff">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="gaballot.org - Track your Georgia mail-in ballot">
+    <meta property="fb:app_id" content="218198872691029">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@VoteAmerica">
+    <meta property="og:image" content="https://s3.amazonaws.com/appforest_uf/f1605654010173x452403538515414600/turnout.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style type="text/css">
+      html, body {
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #navbar {
+        /* fixes navbar height bug in Safari */
+        display: block;
+      }
+
+      .navbar-container {
+        margin: 10px 0;
+      }
+
+      .container.footer-container {
+        max-width: 1200px;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .navbar-container {
+          margin-left: 0;
+          margin-right: 0;
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        #navbar .navbar-container {
+          flex-direction: column-reverse;
+        }
+
+        #navbar .brand {
+          margin-bottom: 20px;
+        }
+      }
+
+      #content {
+        flex: 1;
+      }
+
+      #footer {
+        flex-shrink: 0;
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      .container {
+        max-width: 640px;
+        margin: auto;
+      }
+      .MuiSvgIcon-root {
+        width: 30px;
+        fill: black;
+      }
+      .icon-circle {
+        background-color: white;
+        border-radius: 50%;
+        padding: 8px;
+        margin: 8px;
+      }
+      .btn-danger {
+        background-color: #e12814;
+      }
+      .btn-primary {
+        background-color: #2274d8;
+      }
+      .card {
+        border-radius: 0;
+      }
+      #footer, #navbar {
+        background-color: black;
+        color: white;
+      }
+
+      #footer {
+        color: rgb(192, 192, 192);
+      }
+
+      #footer a {
+        color: rgb(192, 192, 192);
+        text-decoration: underline;
+      }
+
+      #footer a:hover {
+        color:#2274d8;
+      }
+
+      #footer nav a {
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+
+      #footer nav a:first-child {
+        margin-left: 0;
+      }
+
+      #footer .btn {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 15px 0;
+      }
+
+      #footer .btn:hover {
+        color: white;
+      }
+
+      #footer .icon-circle {
+        transition: all 0.3s;
+        margin-top: 0;
+        margin-bottom: 30px;
+      }
+
+      #footer .icon-circle:first-child {
+        transition: all 0.3s;
+        margin-left: 0;
+      }
+
+      #footer .icon-circle:hover {
+        background-color: #2274d8;
+      }
+
+      img.brand {
+        height: 40px;
+      }
+      .bg-dark, .navbar-dark {
+        background-color: black;
+      }
+      .checkbox {
+        color: #018845;
+        vertical-align: bottom;
+      }
+
+      .list-group-item {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .list-icon {
+        width: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .list-text {
+        flex: 1;
+      }
+
+      input {
+        text-transform: uppercase;
+      }
+
+      .bottom-warning {
+        margin-top: 40px;
+      }
+
+      ::-webkit-input-placeholder {
+        text-transform: none;
+      }
+
+      :-moz-placeholder {
+        text-transform: none;
+      }
+
+      ::-moz-placeholder {
+        text-transform: none;
+      }
+
+      :-ms-input-placeholder {
+        text-transform: none;
+      }
+
+      .material-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;  /* Preferred icon size */
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+
+        /* Support for all WebKit browsers. */
+        -webkit-font-smoothing: antialiased;
+        /* Support for Safari and Chrome. */
+        text-rendering: optimizeLegibility;
+
+        /* Support for Firefox. */
+        -moz-osx-font-smoothing: grayscale;
+
+        /* Support for IE. */
+        font-feature-settings: 'liga';
+      }
+
+      .brand a {
+        color: white;
+      }
+
+      h3 {
+        margin-top: 40px;
+      }
+    </style>
+
+    <title>VoteAmerica Georgia Ballot Tracker</title>
+    {% endblock %}
+  </head>
+  <body>
+    <nav id="navbar" class="navbar navbar-dark text-white">
+      <div class="container-fluid navbar-container">
+        <h1 class="brand m-0 h4"><a href="/">2021 Georgia Early Vote Ballot Tracker</a></h1>
+        <a href="https://www.voteamerica.com" target="_blank" rel="noopener noreferrer">
+          <img class="brand" src="https://www.voteamerica.com/img/brand-assets/wordmark_transparent_for_black.svg" alt="VoteAmerica" width="155" height="40" />
+        </a>
+      </div>
+    </nav>
+
+    <div id="content">
+      {% block intro %}
+      <div class="container pt-5 mb-3">
+        <p class="m-0">
+          On January 5th there will be a statewide runoff election in Georgia. Let's get all of Georgia voting in this
+          important election! <a href="https://www.facebook.com/search/top?q=my%20friends%20who%20live%20in%20georgia" target="_blank" rel="noopener">Check which of your Facebook friends live in Georgia</a>, then use the search box below to look them up
+          and see if they have sent in their mail-in ballots.<br><br>NOTE: no data has yet been published by the GA secretary of state for the Jan 5 runoff election. For now, when this site
+          refers to "new election", it is referring to the December 1 special election.
+        </p>
+      </div>
+      {% endblock %}
+
+      {% block content %}{% endblock %}
+    </div>
+
+    <footer id="footer" class="px-3 py-5 px-md-5 mt-5">
+      <div class="container footer-container">
+        <div class="row">
+          <div class="col-lg-3 col-sm-6 mb-3 order-first d-flex align-items-start">
+            <a class="icon-circle" href="https://www.facebook.com/VoteAmerica" target="_blank" rel="noopener noreferrer">
+              <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5A3.5 3.5 0 0 0 12 8.5V11h-2v3h2v7h3v-7h3v-3h-3V9a1 1 0 0 1 1-1h2V5z"></path></svg>
+              <span class="sr-only">Facebook (Opens in new window)</span>
+            </a>
+            <a class="icon-circle" href="https://twitter.com/voteamerica" target="_blank" rel="noopener noreferrer" class="Footer__SocialLinkA-sc-1r1y788-18 iPNIxz">
+              <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"></path></svg>
+              <span class="sr-only">Twitter (Opens in new window)</span>
+            </a>
+            <a class="icon-circle" href="https://www.instagram.com/voteamerica_" target="_blank" rel="noopener noreferrer" class="Footer__SocialLinkA-sc-1r1y788-18 iPNIxz">
+              <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
+              <span class="sr-only">Instagram (Opens in new window)</span>
+            </a>
+          </div>
+
+          <div class="col-lg-6 col-sm-12 order-sm-last order-md-last order-xs-last mb-5">
+            <p>
+              The Georgia ballot tracker is built by volunteers and maintained by VoteAmerica,
+              using public data published by the
+              <a href="https://elections.sos.ga.gov/Elections/voterabsenteefile.do" target="_blank" rel="noopener noreferrer">State of Georgia</a>.
+            </p>
+            <p>VoteAmerica is a 501(c)3 registered non-profit organization, and does not support or oppose any political candidate or party. Our EIN is 84-3442002. Donations are tax-deductible.</p>
+            <nav class="d-flex">
+              <a href="https://www.voteamerica.com/privacy/">Privacy</a>
+              <a href="https://www.voteamerica.com/terms/">Terms</a>
+              <a href="/faq">FAQ & Contact</a>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-sm-6 order-lg-last">
+            <a class="btn-danger btn btn-lg btn-block mx-md-auto" href="https://secure.actblue.com/donate/voteamerica?refcode=ga-ballot-tracker" target="_blank" rel="noopener">Donate</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

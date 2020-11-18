@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Look up Georgia absentee receipts</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <style type="text/css">
+html, body {
+  font-family: sans-serif;
+}
+        </style>
+    </head>
+    <body>
+        <h1>ga-elex</h1>
+
+        <h3>Results from {{records[0].county}} County</h3>
+        <ul>
+        {% for record in records %}
+            <li>{{record.name}} (recorded {{record.day}})</li>
+        {% endfor %}
+        </ul>
+    </body>
+</html>

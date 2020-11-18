@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="alert alert-success" role="alert">
+    <p class="mb-0">
+      <strong>Success!</strong>
+      Found {% if were_more_records %}more than 25{% else %}{{results|length}}{% endif %}
+      received ballot{{ results | length | pluralize }} for
+      <strong>{{first}} {{last}}, {{county}} COUNTY</strong>
+    </p>
+  </div>
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      {% for record in results %}
+        <li class="list-group-item">
+          <div class="list-icon" role="presentation">
+            <i class="material-icons checkbox">check_circle</i>
+          </div>
+          <div class="list-text">
+            {{record.first}} {{record.last}}<br />
+            {{record.county}} COUNTY<br />
+            Precinct {{record.precinct}}, {{record.friendly_voting_method()}}<br />
+            Ballot received {{record.friendly_date()}}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% if were_more_records %}
+  <p>
+    (There were more than 25 results, so only the first 25 are shown)
+  </p>
+  {% endif %}
+
+  <div class="alert alert-warning bottom-warning" role="alert">
+    <p class="my-0">
+      Not on the list? It can take a few days for results to show up here.
+      If you mailed your ballot more than 7 days ago, or voted in person more than 3 business days ago,
+      you may want to <a href="{{leo_url}}">contact your Local Elections Office</a>.
+    </p>
+  </div>
+  <p class="my-5"><a href="/">&#171; Back to search page</a></p>
+</div>
+
+
+
+
+{% endblock %}

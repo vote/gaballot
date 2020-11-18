@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="alert alert-success" role="alert">
+    <p class="mb-0">
+      <strong>Success!</strong>
+      Your {{record.friendly_voting_method()}} ballot (from {{record.first}} {{record.last}},
+      {{record.county}} COUNTY, Precinct {{record.precinct}}) was received
+      on {{record.friendly_date()}}.
+    </p>
+  </div>
+  <p class="my-0">
+    If you have any other questions, you can
+    <a href="{{leo_url}}">contact your Local Elections Office</a>.
+  </p>
+
+  <p class="my-5"><a href="/">&#171; Back to search page</a></p>
+</div>
+
+
+{% endblock %}
