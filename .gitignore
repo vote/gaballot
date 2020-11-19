@@ -8,7 +8,6 @@ __pycache__
 sample.csv
 bulk.json
 cov.xml
-env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

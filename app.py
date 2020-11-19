@@ -29,7 +29,7 @@ db = SQLAlchemy(app, session_options={"autoflush": False})
 
 
 class VoteRecord(db.Model):
-    __tablename__ = "joined_voters"
+    __tablename__ = "voters_and_statuses"
 
     id = db.Column("Voter Registration #", db.BigInteger, primary_key=True)
     first = db.Column("First Name", db.String())
@@ -61,6 +61,39 @@ class VoteRecord(db.Model):
     def friendly_voting_method(self):
         # return self.ballot_style.lower()
         return ""
+
+    def friendly_first(self):
+        return self.first.capitalize()
+
+    def friendly_ballot_status(self, specialElection):
+        if specialElection:
+            app_status = self.special_app_status
+            ballot_status = self.special_ballot_status
+            status_reason = self.special_status_reason
+            return_date = self.special_return_date
+            result = 'For the January special election, '
+        else:
+            app_status = self.general_app_status
+            ballot_status = self.general_ballot_status
+            status_reason = self.general_status_reason
+            return_date = self.general_return_date
+            result = 'In November\'s general election, '
+        
+        if ballot_status == 'A':
+            result += (self.friendly_first() +
+                '\'s ballot was successfully received back at the office on ' +
+                return_date.strftime("%B %d") + '.')
+        elif ballot_status:
+            result += ('there may have been a problem with their ballot. ' +
+                'Here\'s the explanation we are seeing: "' + status_reason + '".')
+        elif app_status == 'A':
+            result += (self.friendly_first() +
+                ' applied to vote by mail, but their ballot did not make its way back to be counted.')
+        else:
+            result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
+
+        return result
+
 
 
 def render_template_nocache(template_name, **args):
