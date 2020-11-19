@@ -1,68 +1,50 @@
-import json
-import os
 import logging
+import os
 from datetime import date
 
-from flask import Flask, render_template, request, redirect, make_response
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm.exc import NoResultFound
 import sentry_sdk
+from flask import Flask, make_response, redirect, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 from sentry_sdk.integrations.flask import FlaskIntegration
+from sqlalchemy.orm.exc import NoResultFound
 
 from analytics import statsd
 
 logging.getLogger().setLevel(logging.INFO)
 
-sentry_sdk.init(
-    "https://1c52ad490a08415fa8e4856e184976f2@o335887.ingest.sentry.io/5522281",
-    integrations=[FlaskIntegration()],
-)
+DEBUG = "APP_SETTINGS" not in os.environ
+
+if not DEBUG:
+    sentry_sdk.init(
+        "https://1c52ad490a08415fa8e4856e184976f2@o335887.ingest.sentry.io/5522281",
+        integrations=[FlaskIntegration()],
+    )
 
 app = Flask(__name__)
-if "APP_SETTINGS" in os.environ:
-    app.config.from_object(os.environ["APP_SETTINGS"])
-else:
+if DEBUG:
     app.config.from_object("config.DevelopmentConfig")
+else:
+    app.config.from_object(os.environ["APP_SETTINGS"])
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app, session_options={"autoflush": False})
 
-"""
+
 class VoteRecord(db.Model):
-    __tablename__ = "vote_records"
+    __tablename__ = "voters_35209_current"
 
-    __table_args__ = (
-        db.Index(
-            "first_trgm_idx",
-            "first",
-            postgresql_ops={"first": "gin_trgm_ops"},
-            postgresql_using="gin",
-        ),
-        db.Index(
-            "last_trgm_idx",
-            "last",
-            postgresql_ops={"last": "gin_trgm_ops"},
-            postgresql_using="gin",
-        ),
-    )
-
-    id = db.Column(db.BigInteger, primary_key=True)
-    first = db.Column(db.String(), index=True)
-    last = db.Column(db.String(), index=True)
-    middle = db.Column(db.String(), index=True)
-    city = db.Column(db.String(), index=True)
-    county = db.Column(db.String(), index=True)
-    day = db.Column(db.String(), index=True)
-    voting_method = db.Column("VOTING_METHOD", db.String())
-
-    def __init__(self, id, name, county, precinct, day):
-        self.id = id
-        self.name = name
-        self.first = name.split(",")[1].strip()
-        self.last = name.split(",")[0].strip()
-        self.county = county
-        self.precinct = precinct
-        self.day = day
+    id = db.Column("Voter Registration #", db.BigInteger, primary_key=True)
+    first = db.Column("First Name", db.String())
+    last = db.Column("Last Name", db.String())
+    middle = db.Column("Middle", db.String())
+    city = db.Column("City", db.String())
+    county = db.Column("County", db.String())
+    application_status = db.Column("Application Status", db.String())
+    ballot_status = db.Column("Ballot Status", db.String())
+    ballot_style = db.Column("Status Reason", db.String())
+    app_date = db.Column("Application Date", db.String())
+    issued_date = db.Column("Ballot Issued Date", db.String())
+    return_date = db.Column("Ballot Return Date", db.String())
 
     def friendly_date(self):
         return date.fromisoformat(self.day).strftime("%B %d")
@@ -70,10 +52,6 @@ class VoteRecord(db.Model):
     def friendly_voting_method(self):
         return self.voting_method.lower()
 
-
-db.create_all()
-db.session.commit()
-"""
 
 def render_template_nocache(template_name, **args):
     resp = make_response(render_template(template_name, **args))
@@ -87,6 +65,7 @@ def index():
     resp.headers.set("Cache-Control", "public, max-age=7200")
 
     return resp
+
 
 @app.route("/faq")
 def faq():
@@ -106,7 +85,7 @@ def search():
         logging.info("Handling request by Voter ID")
 
         try:
-            voteid = int(request.values["voteid"])
+            int(request.values["voteid"])
         except ValueError:
             logging.info(f"Invalid voteid: {request.values['voteid']}")
             return render_template_nocache(
@@ -119,7 +98,8 @@ def search():
             statsd.increment("ga.lookup.success")
             logging.info("Voter ID query returned a result")
             return render_template_nocache(
-                "res-id.html", record=record,
+                "res-id.html",
+                record=record,
             )
         except NoResultFound:
             statsd.increment("ga.lookup.no_results")
@@ -139,8 +119,7 @@ def search():
         county = request.values["county"].upper()
 
         records = (
-            VoteRecord.query.filter_by(county=county)
-            .filter(VoteRecord.first.like(f"{first}%"))
+            VoteRecord.query.filter(VoteRecord.first.like(f"{first}%"))
             .filter(VoteRecord.last.like(f"{last}%"))
             .order_by(VoteRecord.last, VoteRecord.first)
             .limit(26)
@@ -171,7 +150,8 @@ def search():
     logging.info("Invalid request")
     statsd.increment("ga.lookup.invalid_request")
     return render_template_nocache(
-        "error.html", msg="Please make sure to fill out all form fields.",
+        "error.html",
+        msg="Please make sure to fill out all form fields.",
     )
 
 
@@ -185,4 +165,4 @@ def pluralize(number, singular="", plural="s"):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=DEBUG)
