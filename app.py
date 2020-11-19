@@ -1,12 +1,10 @@
 import logging
 import os
-from datetime import date
 
 import sentry_sdk
 from flask import Flask, make_response, redirect, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sentry_sdk.integrations.flask import FlaskIntegration
-from sqlalchemy.orm.exc import NoResultFound
 
 from analytics import statsd
 
@@ -31,7 +29,7 @@ db = SQLAlchemy(app, session_options={"autoflush": False})
 
 
 class VoteRecord(db.Model):
-    __tablename__ = "voters_35211_current"
+    __tablename__ = "joined_voters"
 
     id = db.Column("Voter Registration #", db.BigInteger, primary_key=True)
     first = db.Column("First Name", db.String())
@@ -39,20 +37,29 @@ class VoteRecord(db.Model):
     middle = db.Column("Middle Name", db.String())
     city = db.Column("City", db.String())
     county = db.Column("County", db.String())
-    application_status = db.Column("Application Status", db.String())
-    ballot_status = db.Column("Ballot Status", db.String())
-    ballot_style = db.Column("Status Reason", db.String())
-    app_date = db.Column("Application Date", db.String())
-    issued_date = db.Column("Ballot Issued Date", db.String())
-    return_date = db.Column("Ballot Return Date", db.String())
+
+    general_app_status = db.Column("Old App Status", db.String())
+    general_ballot_status = db.Column("Old Ballot Status", db.String())
+    general_status_reason = db.Column("Old Status Reason", db.String())
+    general_app_date = db.Column("Old App Date", db.String())
+    general_issue_date = db.Column("Old Issued Date", db.String())
+    general_return_date = db.Column("Old Return Date", db.String())
+    general_ballot_style = db.Column("Old Ballot Style", db.String())
+
+    special_app_status = db.Column("New App Status", db.String())
+    special_ballot_status = db.Column("New Ballot Status", db.String())
+    special_status_reason = db.Column("New Status Reason", db.String())
+    special_app_date = db.Column("New App Date", db.String())
+    special_issued_date = db.Column("New Issued Date", db.String())
+    special_return_date = db.Column("New Return Date", db.String())
+    special_ballot_style = db.Column("New Ballot Style", db.String())
 
     def friendly_date(self):
-        #return date.fromisoformat(self.day).strftime("%B %d")
+        # return date.fromisoformat(self.day).strftime("%B %d")
         return ""
 
-
     def friendly_voting_method(self):
-        #return self.ballot_style.lower()
+        # return self.ballot_style.lower()
         return ""
 
 
@@ -83,10 +90,7 @@ def search():
     if request.method != "POST":
         return redirect("/")
 
-    if (
-        request.values.get("first")
-        and request.values.get("last")
-    ):
+    if request.values.get("first") and request.values.get("last"):
         statsd.increment("ga.lookup.name")
         logging.info("Handling request by first/last")
         first = request.values["first"].strip().upper().replace(",", "")

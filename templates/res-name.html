@@ -8,7 +8,7 @@
       <strong>Success!</strong>
       Found {% if were_more_records %}more than 25{% else %}{{results|length}}{% endif %}
       received ballot{{ results | length | pluralize }} for
-      <strong>{{first}} {{last}}, {{county}} COUNTY</strong>
+      <strong>{{first}} {{last}}</strong>
     </p>
   </div>
   <div class="card">
@@ -19,10 +19,22 @@
             <i class="material-icons checkbox">check_circle</i>
           </div>
           <div class="list-text">
-            {{record.first}} {{record.last}}<br />
-            {{record.county}} COUNTY<br />
-            Precinct {{record.precinct}}, {{record.friendly_voting_method()}}<br />
-            Ballot received {{record.friendly_date()}}
+            {{record.first}} {{ record.middle }} {{record.last}}<br />
+            {{ record.city }}, {{record.county}} COUNTY<br />
+            General App Status: {{ record.general_app_status }}<br>
+            General Ballot Status: {{ record.general_ballot_status }}<br>
+            General Status Reason: {{ record.general_status_reason }}<br>
+            General App Date: {{ record.general_app_date }}<br>
+            General Issue Date: {{ record.general_issue_date }}<br>
+            General Return Date: {{ record.general_return_date }}<br>
+            General Ballot Style: {{ record.general_ballot_style }}<br>
+            Special App Status: {{ record.special_app_status }}<br>
+            Special Ballot Status: {{ record.special_ballot_status }}<br>
+            Special Status Reason: {{ record.special_status_reason }}<br>
+            Special App Date: {{ record.special_app_date }}<br>
+            Special Issue Date: {{ record.special_issued_date }}<br>
+            Special Return Date: {{ record.special_return_date }}<br>
+            Special Ballot Style: {{ record.special_ballot_style }}<br>
           </div>
         </li>
       {% endfor %}
