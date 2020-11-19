@@ -3,29 +3,10 @@
 {% block content %}
 
 <div class="container my-5">
-  <form class="card p-3 p-lg-4" method="POST" action="/search">
-    <h2 class="h4">Search with your Georgia voter ID number</h2>
-    <div class="form-row">
-      <div class="col-12 mt-3"><label for="input-voteid">Your voter ID number (10 digits, like 1100055555)</label></div>
-
-      <div class="col-md-8 col-sm-12 mb-3">
-        <input type="text" placeholder="Georgia voter ID number"
-          class="form-control" name="voteid" id="input-voteid"
-          required aria-required="true"
-          inputmode="numeric" pattern="[0-9]*"
-          minlength="10" maxlength="10"
-        />
-      </div>
-      <div class="col-md-4 col-sm-12 mb-3">
-        <button type="submit" class="btn btn-primary btn-block">Search by ID</button>
-      </div>
-    </div>
-  </form>
-</div>
 
 <div class="container py-3">
   <form class="card p-3 p-lg-4" method="POST" action="/search">
-    <h2 class="h4">Or, search with your name and county</h2>
+    <h2 class="h4">Search by name</h2>
     <p><em>Don't use middle initials, suffixes like &ldquo;Sr,&rdquo; etc.</em></p>
     <div class="form-row">
       <div class="col-md-6 col-sm-12 mb-3">
@@ -38,14 +19,7 @@
       </div>
     </div>
     <div class="form-row">
-      <div class="col-12"><label for="input-county">County</label></div>
-      <div class="col-md-8 col-sm-12 mb-3">
-        <select name="county" class="form-control" id="input-county" required aria-required="true">
-          <option value="">Select county...</option>
-          <option value="Fulton">Fulton</option>
-        </select>
-      </div>
-      <div class="col-md-4 col-sm-12 mb-3">
+      <div class="col-md-12 col-sm-12 mb-3">
         <button type="submit" class="btn btn-primary btn-block">Search by name</button>
       </div>
     </div>

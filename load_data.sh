@@ -14,7 +14,7 @@ clean_up () {
 }
 trap clean_up EXIT
 
-source ./env
+source ./.env
 
 echo "Unzipping STATEWIDE.csv from $1.zip..."
 unzip $1.zip STATEWIDE.csv
@@ -24,12 +24,12 @@ ELECTION=$1
 TABLE="voters_${ELECTION}_${DATE}"
 
 echo "Setting up data types (okay if this fails)..."
-psql $DB << EOM
+psql $DATABASE_URL << EOM
 CREATE TYPE BallotStyle AS ENUM ('MAILED', 'IN PERSON', 'ELECTRONIC');
 EOM
 
 echo "Creating table: $TABLE..."
-psql $DB << EOM
+psql $DATABASE_URL << EOM
 DROP TABLE IF EXISTS $TABLE;
 CREATE TABLE $TABLE (
   "County" text,
@@ -79,21 +79,21 @@ echo "Loading data into table..."
 pv STATEWIDE.csv   | # display a progress indicator
   iconv -c -t utf8 | # throw out invalid utf8 characters
   grep -ax '.*'    | # filter out non-ascii stuff altogether since i still had errors after the iconv
-  psql $DB -c "COPY $TABLE FROM STDIN DELIMITER ',' CSV HEADER;"
+  psql $DATABASE_URL -c "COPY $TABLE FROM STDIN DELIMITER ',' CSV HEADER;"
 
 echo "Creating indices..."
-psql $DB << EOM
+psql $DATABASE_URL << EOM
 CREATE INDEX ON $TABLE ( "Last Name", "First Name" );
 CREATE INDEX ON $TABLE ( "Voter Registration #" );
 EOM
 
 echo "Updating rollup stats (disregard errors about the materialized view already existing)..."
-psql $DB << EOM
+psql $DATABASE_URL << EOM
 CREATE OR REPLACE VIEW voters_${ELECTION}_current AS
   SELECT * FROM $TABLE;
 
 -- this will (intentionally) fail if the table already exists
-CREATE MATERIALIZED VIEW voter_status_counters_$ELECTION AS 
+CREATE MATERIALIZED VIEW voter_status_counters_$ELECTION AS
   SELECT
     CASE WHEN grouping("Application Status") = 1 THEN 'total' ELSE "Application Status" END AS "Application Status",
     CASE WHEN grouping("Ballot Status") = 1 THEN 'total' ELSE "Ballot Status" END AS "Ballot Status",

@@ -31,12 +31,12 @@ db = SQLAlchemy(app, session_options={"autoflush": False})
 
 
 class VoteRecord(db.Model):
-    __tablename__ = "voters_35209_current"
+    __tablename__ = "voters_35211_current"
 
     id = db.Column("Voter Registration #", db.BigInteger, primary_key=True)
     first = db.Column("First Name", db.String())
     last = db.Column("Last Name", db.String())
-    middle = db.Column("Middle", db.String())
+    middle = db.Column("Middle Name", db.String())
     city = db.Column("City", db.String())
     county = db.Column("County", db.String())
     application_status = db.Column("Application Status", db.String())
@@ -47,10 +47,13 @@ class VoteRecord(db.Model):
     return_date = db.Column("Ballot Return Date", db.String())
 
     def friendly_date(self):
-        return date.fromisoformat(self.day).strftime("%B %d")
+        #return date.fromisoformat(self.day).strftime("%B %d")
+        return ""
+
 
     def friendly_voting_method(self):
-        return self.voting_method.lower()
+        #return self.ballot_style.lower()
+        return ""
 
 
 def render_template_nocache(template_name, **args):
@@ -80,43 +83,14 @@ def search():
     if request.method != "POST":
         return redirect("/")
 
-    if request.values.get("voteid"):
-        statsd.increment("ga.lookup.voter_id")
-        logging.info("Handling request by Voter ID")
-
-        try:
-            int(request.values["voteid"])
-        except ValueError:
-            logging.info(f"Invalid voteid: {request.values['voteid']}")
-            return render_template_nocache(
-                "error.html",
-                msg="Invalid voter ID. Please make sure you enter a 10-digit number.",
-            )
-
-        try:
-            record = VoteRecord.query.filter_by(id=int(request.values["voteid"])).one()
-            statsd.increment("ga.lookup.success")
-            logging.info("Voter ID query returned a result")
-            return render_template_nocache(
-                "res-id.html",
-                record=record,
-            )
-        except NoResultFound:
-            statsd.increment("ga.lookup.no_results")
-            logging.info("Voter ID query returned no result")
-            return render_template_nocache(
-                "no-res-id.html", voter_id=request.values["voteid"]
-            )
-    elif (
+    if (
         request.values.get("first")
         and request.values.get("last")
-        and request.values.get("county")
     ):
-        statsd.increment("ga.lookup.name_county")
-        logging.info("Handling request by first/last/county")
+        statsd.increment("ga.lookup.name")
+        logging.info("Handling request by first/last")
         first = request.values["first"].strip().upper().replace(",", "")
         last = request.values["last"].strip().upper().replace(",", "")
-        county = request.values["county"].upper()
 
         records = (
             VoteRecord.query.filter(VoteRecord.first.like(f"{first}%"))
@@ -128,21 +102,19 @@ def search():
 
         if len(records) == 0:
             statsd.increment("ga.lookup.no_results")
-            logging.info("Voter ID query by first/last/county returned no results")
+            logging.info("Voter ID query by first/last returned no results")
             return render_template_nocache(
                 "no-res-name.html",
                 first=first,
                 last=last,
-                county=county,
             )
         else:
             statsd.increment("ga.lookup.success")
-            logging.info("Voter ID query by first/last/county returned results")
+            logging.info("Voter ID query by first/last returned results")
             return render_template_nocache(
                 "res-name.html",
                 first=first,
                 last=last,
-                county=county,
                 results=records[:25],
                 were_more_records=(len(records) > 25),
             )
