@@ -83,8 +83,8 @@ pv STATEWIDE.csv   | # display a progress indicator
 
 echo "Creating indices..."
 psql $DATABASE_URL << EOM
-CREATE INDEX ON $TABLE ( "Last Name", "First Name" );
 CREATE INDEX ON $TABLE ( "Voter Registration #" );
+REFRESH MATERIALIZED VIEW all_voters;
 EOM
 
 echo "Updating rollup stats (disregard errors about the materialized view already existing)..."
