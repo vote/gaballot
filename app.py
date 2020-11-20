@@ -27,6 +27,9 @@ else:
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app, session_options={"autoflush": False})
 
+@app.template_filter('commafy')
+def commafy_filter(v):
+    return "{:,}".format(v)
 
 class VoteRecord(db.Model):
     __tablename__ = "voters_and_statuses"
@@ -112,7 +115,25 @@ def render_template_nocache(template_name, **args):
 
 @app.route("/")
 def index():
-    resp = make_response(render_template("index.html"))
+    sql = (
+        'select "Application Status", "Ballot Status", old.count as "Old Count", new.count as "New Count" ' +
+        'from voter_status_counters_35209 old join voter_status_counters_35211 new using ("Application Status", "Ballot Status") ' +
+        'where "Application Status" = \'A\' and "Ballot Status" in (' + "'A', 'total')"
+    )
+    for r in db.engine.execute(sql):
+        if r["Ballot Status"] == "A":
+            total_returned_old = r["Old Count"]
+            total_returned_new = r["New Count"]
+        else:
+            total_applied_old = r["Old Count"]
+            total_applied_new = r["New Count"]
+
+    resp = make_response(render_template("index.html",
+        total_returned_old = total_returned_old,
+        total_returned_new = total_returned_new,
+        total_applied_old = total_applied_old,
+        total_applied_new = total_applied_new,
+    ))
     resp.headers.set("Cache-Control", "public, max-age=7200")
 
     return resp

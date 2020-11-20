@@ -2,7 +2,13 @@
 
 {% block content %}
 
-<div class="container my-5">
+<div class="container my-3">
+
+So far (as of November 19), {{ total_applied_new|commafy }} ballots have been
+requested for the January special election and {{ total_returned_new|commafy }} have
+been returned. There were {{ total_returned_old|commafy }} ballots returned in the
+general election, so we are
+{{ (100.0 * total_returned_new / total_returned_old)|round(1) }}% of the way there.
 
 <div class="container py-3">
   <form class="card p-3 p-lg-4" method="POST" action="/search">
