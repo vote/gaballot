@@ -11,7 +11,7 @@ CREATE MATERIALIZED VIEW all_voters AS
 
 CREATE INDEX name_index ON all_voters ("Last Name", "First Name");
 
-CREATE VIEW voters_and_statuses AS
+CREATE OR REPLACE VIEW voters_and_statuses AS
 SELECT v.*, 
          a."Application Status" as "Old App Status", a."Ballot Status" as "Old Ballot Status",
          a."Status Reason" as "Old Status Reason",
@@ -22,5 +22,5 @@ SELECT v.*,
          b."Application Date" as "New App Date", b."Ballot Issued Date" as "New Issued Date",
          b."Ballot Return Date" as "New Return Date", b."Ballot Style" as "New Ballot Style"
 FROM all_voters v
-  LEFT JOIN voters_35209_current a USING ("Voter Registration #")
-  LEFT JOIN voters_35211_current b USING ("Voter Registration #");
+  LEFT JOIN current_status_35209 a USING ("Voter Registration #")
+  LEFT JOIN current_status_35211 b USING ("Voter Registration #");

@@ -87,10 +87,30 @@ CREATE INDEX ON $TABLE ( "Voter Registration #" );
 REFRESH MATERIALIZED VIEW all_voters;
 EOM
 
-echo "Updating rollup stats (disregard errors about the materialized view already existing)..."
+echo "Updating derived tables (disregard errors about the materialized view already existing)..."
 psql $DATABASE_URL << EOM
 CREATE OR REPLACE VIEW voters_${ELECTION}_current AS
   SELECT * FROM $TABLE;
+
+-- this will (intentionally) fail if the table already exists
+CREATE MATERIALIZED VIEW current_status_${ELECTION} AS 
+  SELECT DISTINCT ON("Voter Registration #")
+    "Voter Registration #",
+    "Application Status",
+    "Ballot Status",
+    "Status Reason",
+    "Application Date",
+    "Ballot Issued Date",
+    "Ballot Return Date",
+    "Ballot Style"
+  FROM voters_${ELECTION}_current
+  ORDER BY "Voter Registration #",
+           "Ballot Status" != 'A', -- sort successful ballots first
+           "Ballot Return Date" DESC, -- sort the rest by most recent first
+           "Ballot Issued Date" DESC,
+           "Application Date" DESC;
+
+REFRESH MATERIALIZED VIEW current_status_${ELECTION}
 
 -- this will (intentionally) fail if the table already exists
 CREATE MATERIALIZED VIEW voter_status_counters_$ELECTION AS
