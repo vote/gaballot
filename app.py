@@ -139,7 +139,7 @@ def search():
 
         records = (
             VoteRecord.query.filter(VoteRecord.first.like(f"{first}%"))
-            .filter(VoteRecord.last.like(f"{last}%"))
+            .filter(VoteRecord.last == last)
             .order_by(VoteRecord.last, VoteRecord.first)
             .limit(26)
             .all()
