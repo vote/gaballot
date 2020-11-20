@@ -88,9 +88,17 @@ class VoteRecord(db.Model):
                 'Here\'s the explanation we are seeing: "' + status_reason + '".')
         elif app_status == 'A':
             result += (self.friendly_first() +
-                ' applied to vote by mail, but their ballot did not make its way back to be counted.')
+                ' applied to vote by mail, but their ballot ')
+            if specialElection:
+                result += 'has not yet made '
+            else:
+                result += 'did not make '
+            result += 'its way back to be counted.'
         else:
-            result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
+            if specialElection:
+                result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
+            else:
+                result += 'they are not yet listed in the absentee database. Please encourage them to apply for a mail-in ballot or to vote in person!'
 
         return result
 

@@ -1,4 +1,6 @@
--- see also load_data.sh, which creates a number of other tables/indices/views
+-- First, run ./load_data.sh 35209 and ./load_data.sh 35211, as suggested in the
+-- README. The below SQL creates some additional views/indexes and only needs to
+-- be run once, after that is done.
 
 CREATE MATERIALIZED VIEW all_voters AS
   SELECT "First Name", "Middle Name", "Last Name", "County", "City", "Voter Registration #"

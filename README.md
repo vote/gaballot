@@ -9,7 +9,8 @@ To begin you'll need docker, pipenv, and python 3.7 installed locally to develop
 2. Load the data into the postgres database:
     1. Create a copy of `.env.sample` named `.env`, modifying the parameters to connect to your database.
     2. Download the statewide zip files from https://elections.sos.ga.gov/Elections/voterabsenteefile.do for both the November general election (35209.zip) as well as the January runoff (35211.zip).
-    3. Type `./load_data.sh 35209` to load the general election data, and `./load_data.sh 35211` to load the runoff data.
+    3. Type `./load_data.sh 35209` to load the general election data, and `./load_data.sh 35211` to load the runoff data. (This script can also be used to update the data when a new version of the zip file becomes available.)
+    4. Run the SQL commands in `db/init.sql` (this only needs to be done once, after the initial batch of data has been loaded for both elections).
 
 3. In another shell, run `pipenv sync --dev`
 
