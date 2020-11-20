@@ -8,10 +8,8 @@ class Config(object):
     CSRF_ENABLED = True
     if 'DATABASE_URL' in os.environ:
         SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
-        SECRET_KEY = os.environ['SECRET']
     else:
         SQLALCHEMY_DATABASE_URI = "postgres://postgres:postgres@localhost:5432/gatrack"
-        SECRET_KEY = 'scramble'
 
 class ProductionConfig(Config):
     DEBUG = False
