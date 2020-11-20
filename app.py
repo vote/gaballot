@@ -96,9 +96,9 @@ class VoteRecord(db.Model):
             result += 'its way back to be counted.'
         else:
             if specialElection:
-                result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
-            else:
                 result += 'they are not yet listed in the absentee database. Please encourage them to apply for a mail-in ballot or to vote in person!'
+            else:
+                result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
 
         return result
 
