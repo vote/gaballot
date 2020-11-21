@@ -145,20 +145,23 @@ def faq():
     return resp
 
 
-@app.route("/search", methods=["GET", "POST"])
+@app.route("/search", methods=["GET"])
 def search():
-    if request.method != "POST":
-        return redirect("/")
-
     if request.values.get("first") and request.values.get("last"):
         statsd.increment("ga.lookup.name")
         logging.info("Handling request by first/last")
         first = request.values["first"].strip().upper().replace(",", "")
         last = request.values["last"].strip().upper().replace(",", "")
+        middle = request.values["middle"].strip().upper().replace(",", "")
+        county = request.values["county"].strip().upper().replace(",", "")
+        city = request.values["city"].strip().upper().replace(",", "")
 
         records = (
             VoteRecord.query.filter(VoteRecord.first.like(f"{first}%"))
             .filter(VoteRecord.last == last)
+            .filter(VoteRecord.middle.like(f"{middle}%"))
+            .filter(VoteRecord.county.like(f"{county}%"))
+            .filter(VoteRecord.city.like(f"{city}%"))
             .order_by(VoteRecord.last, VoteRecord.first)
             .limit(26)
             .all()
@@ -170,7 +173,10 @@ def search():
             return render_template_nocache(
                 "no-res-name.html",
                 first=first,
+                middle=middle,
                 last=last,
+                county=county,
+                city=city,
             )
         else:
             statsd.increment("ga.lookup.success")
@@ -178,7 +184,10 @@ def search():
             return render_template_nocache(
                 "res-name.html",
                 first=first,
+                middle=middle,
                 last=last,
+                county=county,
+                city=city,
                 results=records[:25],
                 were_more_records=(len(records) > 25),
             )

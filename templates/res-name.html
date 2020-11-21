@@ -5,10 +5,10 @@
 <div class="container">
   <div class="alert alert-success" role="alert">
     <p class="mb-0">
-      <strong>Success!</strong>
       Found {% if were_more_records %}more than 25{% else %}{{results|length}}{% endif %}
-      received ballot{{ results | length | pluralize }} for
-      <strong>{{first}} {{last}}</strong>
+      match{{ results|length|pluralize('', 'es') }} for
+      <strong>{{first}} {{middle}} {{last}}</strong>{% if city or county %} in
+      <strong>{{ city }}{% if city and county %}, {% endif %}{{ county }}</strong>{% endif %}.
     </p>
   </div>
   <div class="card">

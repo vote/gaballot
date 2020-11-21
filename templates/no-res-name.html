@@ -5,8 +5,8 @@
 <div class="container">
   <div class="alert alert-warning" role="alert">
     <h4 class="alert-heading">No results</h4>
-    <p>Sorry, there are no results for <strong>{{first}} {{last}}</strong> in
-      <strong>{{county}} COUNTY</strong>. You may want to check for typos and try again.
+    <p>Sorry, there are no results for <strong>{{first}} {{middle}} {{last}}</strong>{% if city or county %} in
+      <strong>{{ city }}{% if city and county %}, {% endif %}{{ county }}</strong>{% endif %}. You may want to check for typos and try again.
       Remember not to include extra characters like "Sr" or middle initials.</p>
     <p class="my-0">
       It can take a few days for results to show up here.
