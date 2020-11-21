@@ -85,7 +85,7 @@ class VoteRecord(db.Model):
         if ballot_status == 'A':
             result += (self.friendly_first() +
                 '\'s ballot was successfully received back at the office on ' +
-                return_date.strftime("%B %d") + '.')
+                return_date.strftime("%B %-d") + '.')
         elif ballot_status:
             result += ('there may have been a problem with their ballot. ' +
                 'Here\'s the explanation we are seeing: "' + status_reason + '".')
@@ -127,7 +127,7 @@ select
      where "Application Status" = 'A' and "Ballot Status" = 'total') 
         as applied_special,
     (select file_update_time from updated_times
-     where election = '35211' order by job_time desc) 
+     where election = '35211' order by job_time desc limit 1) 
         as update_time'''
     stats = db.engine.execute(sql).first()
 
