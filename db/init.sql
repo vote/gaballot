@@ -24,3 +24,9 @@ SELECT v.*,
 FROM all_voters v
   LEFT JOIN current_status_35209 a USING ("Voter Registration #")
   LEFT JOIN current_status_35211 b USING ("Voter Registration #");
+
+CREATE TABLE updated_times (
+  election text,
+  job_time timestamp,
+  file_update_time timestamp
+)

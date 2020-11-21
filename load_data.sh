@@ -122,4 +122,6 @@ CREATE MATERIALIZED VIEW voter_status_counters_$ELECTION AS
   GROUP BY ROLLUP ("Application Status", "Ballot Status");
 
 REFRESH MATERIALIZED VIEW voter_status_counters_$ELECTION;
+
+INSERT INTO updated_times VALUES ('$ELECTION', now(), '`date -r STATEWIDE.csv`');
 EOM

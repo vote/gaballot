@@ -115,25 +115,23 @@ def render_template_nocache(template_name, **args):
 
 @app.route("/")
 def index():
-    sql = (
-        'select "Application Status", "Ballot Status", old.count as "Old Count", new.count as "New Count" ' +
-        'from voter_status_counters_35209 old join voter_status_counters_35211 new using ("Application Status", "Ballot Status") ' +
-        'where "Application Status" = \'A\' and "Ballot Status" in (' + "'A', 'total')"
-    )
-    for r in db.engine.execute(sql):
-        if r["Ballot Status"] == "A":
-            total_returned_old = r["Old Count"]
-            total_returned_new = r["New Count"]
-        else:
-            total_applied_old = r["Old Count"]
-            total_applied_new = r["New Count"]
+    sql = '''
+select
+    (select count from voter_status_counters_35209
+     where "Application Status" = 'A' and "Ballot Status" = 'A')
+        as returned_general,
+    (select count from voter_status_counters_35211
+     where "Application Status" = 'A' and "Ballot Status" = 'A') 
+        as returned_special,
+    (select count from voter_status_counters_35211
+     where "Application Status" = 'A' and "Ballot Status" = 'total') 
+        as applied_special,
+    (select file_update_time from updated_times
+     where election = '35211' order by job_time desc) 
+        as update_time'''
+    stats = db.engine.execute(sql).first()
 
-    resp = make_response(render_template("index.html",
-        total_returned_old = total_returned_old,
-        total_returned_new = total_returned_new,
-        total_applied_old = total_applied_old,
-        total_applied_new = total_applied_new,
-    ))
+    resp = make_response(render_template("index.html", stats = stats))
     resp.headers.set("Cache-Control", "public, max-age=7200")
 
     return resp

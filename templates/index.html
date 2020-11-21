@@ -4,11 +4,12 @@
 
 <div class="container my-3">
 
-So far (as of November 19), {{ total_applied_new|commafy }} ballots have been
-requested for the January special election and {{ total_returned_new|commafy }} have
-been returned. There were {{ total_returned_old|commafy }} ballots returned in the
-general election, so we are
-{{ (100.0 * total_returned_new / total_returned_old)|round(1) }}% of the way there.
+So far (as of {{ stats.update_time.strftime('%B %d') }}), {{ stats.applied_special|commafy }}
+ballots have been requested for the January special election and {{
+stats.returned_special|commafy }} have been returned. There were {{
+stats.returned_general|commafy }} ballots returned in the general election,
+so we are
+{{ (100.0 * stats.returned_special / stats.returned_general)|round(1) }}% of the way there.
 
 <div class="container py-3">
   <form class="card p-3 p-lg-4" method="POST" action="/search">
