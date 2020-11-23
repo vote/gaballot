@@ -9,7 +9,15 @@ CREATE MATERIALIZED VIEW all_voters AS
   SELECT "First Name", "Middle Name", "Last Name", "County", "City", "Voter Registration #"
   FROM voters_35211_current;
 
-CREATE INDEX name_index ON all_voters ("Last Name", "First Name");
+-- CREATE INDEX name_index ON all_voters ("Last Name", "First Name");
+
+-- this is kind of dumb but in order to make the materialized view refresh be
+-- concurrent, postgres requires a unique index on the table. we need to include
+-- every column to guarantee uniqueness. in practice we'll only use the first
+-- two.
+CREATE UNIQUE INDEX name_index on all_voters (
+  "Last Name", "First Name", "Middle Name", "County", "City", "Voter Registration #"
+);
 
 CREATE OR REPLACE VIEW voters_and_statuses AS
 SELECT v.*, 

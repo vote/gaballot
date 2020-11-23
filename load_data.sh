@@ -81,14 +81,9 @@ pv STATEWIDE.csv   | # display a progress indicator
   grep -ax '.*'    | # filter out non-ascii stuff altogether since i still had errors after the iconv
   psql $DATABASE_URL -c "COPY $TABLE FROM STDIN DELIMITER ',' CSV HEADER;"
 
-echo "Creating indices..."
-psql $DATABASE_URL << EOM
-CREATE INDEX ON $TABLE ( "Voter Registration #" );
-REFRESH MATERIALIZED VIEW all_voters;
-EOM
-
 echo "Updating derived tables (disregard errors about the materialized view already existing)..."
 psql $DATABASE_URL << EOM
+REFRESH MATERIALIZED VIEW CONCURRENTLY all_voters;
 CREATE OR REPLACE VIEW voters_${ELECTION}_current AS
   SELECT * FROM $TABLE;
 
@@ -110,7 +105,9 @@ CREATE MATERIALIZED VIEW current_status_${ELECTION} AS
            "Ballot Issued Date" DESC,
            "Application Date" DESC;
 
-REFRESH MATERIALIZED VIEW current_status_${ELECTION}
+CREATE UNIQUE INDEX voter_reg_idx_${ELECTION} ON current_status_${ELECTION} ( "Voter Registration #" );
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY current_status_${ELECTION};
 
 -- this will (intentionally) fail if the table already exists
 CREATE MATERIALIZED VIEW voter_status_counters_$ELECTION AS
