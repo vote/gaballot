@@ -4,6 +4,7 @@ import os
 import sentry_sdk
 from flask import Flask, make_response, redirect, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+import jinja2
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from analytics import statsd
@@ -73,18 +74,21 @@ class VoteRecord(db.Model):
             app_status = self.special_app_status
             ballot_status = self.special_ballot_status
             status_reason = self.special_status_reason
+            ballot_style = self.special_ballot_style
             return_date = self.special_return_date
             result = 'For the January special election, '
         else:
             app_status = self.general_app_status
             ballot_status = self.general_ballot_status
             status_reason = self.general_status_reason
+            ballot_style = self.general_ballot_style
             return_date = self.general_return_date
             result = 'In November\'s general election, '
         
         if ballot_status == 'A':
             result += (self.friendly_first() +
-                '\'s ballot was successfully received back at the office on ' +
+                '\'s ' + ballot_style.lower() +
+                ' ballot was successfully cast on ' + 
                 return_date.strftime("%B %-d") + '.')
         elif ballot_status:
             result += ('there may have been a problem with their ballot. ' +
@@ -99,7 +103,9 @@ class VoteRecord(db.Model):
             result += 'its way back to be counted.'
         else:
             if specialElection:
-                result += 'they are not yet listed in the absentee database. Please encourage them to apply for a mail-in ballot or to vote in person!'
+                result += ('they are not yet listed in the absentee database. ' +
+                    'Please encourage them to ' +
+                    jinja2.Markup('<a href="https://ballotrequest.sos.ga.gov/">apply for a mail-in ballot</a>!'))
             else:
                 result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
 

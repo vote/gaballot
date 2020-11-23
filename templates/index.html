@@ -4,7 +4,7 @@
 
 <div class="container my-3">
 
-So far (as of {{ stats.update_time.strftime('%B %d') }}), {{ stats.applied_special|commafy }}
+So far (as of {{ stats.update_time.strftime('%B %d at %-I:%M %p EST') }}), {{ stats.applied_special|commafy }}
 ballots have been requested for the January special election and {{
 stats.returned_special|commafy }} have been returned. There were {{
 stats.returned_general|commafy }} ballots returned early in the general

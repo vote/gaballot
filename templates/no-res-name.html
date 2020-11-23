@@ -6,12 +6,18 @@
   <div class="alert alert-warning" role="alert">
     <h4 class="alert-heading">No results</h4>
     <p>Sorry, there are no results for <strong>{{first}} {{middle}} {{last}}</strong>{% if city or county %} in
-      <strong>{{ city }}{% if city and county %}, {% endif %}{{ county }}</strong>{% endif %}. You may want to check for typos and try again.
+      <strong>{{ city }}{% if city and county %}, {% endif %}{{ county }}</strong>{% endif %}. Please check for typos and try again.
       Remember not to include extra characters like "Sr" or middle initials.</p>
+    <p>
+      If you're sure you got it right, please reach out to them and find out
+      about their voting plans. They can request an absentee ballot online,
+      using <a href="https://ballotrequest.sos.ga.gov/">ballotrequest.sos.ga.gov</a>.
+    </p>
     <p class="my-0">
-      It can take a few days for results to show up here.
-      If you mailed your ballot more than 7 days ago, or voted in person more than 3 business days ago,
-      you may want to <a href="{{leo_url}}">contact your Local Elections Office</a>.
+      It can take a few days for results to show up here. If all else fails,
+      they may want to
+      <a href="https://www.voteamerica.com/local-election-offices/GA/">contact
+      their Local Elections Office</a>.
     </p>
   </div>
   <p class="my-5"><a href="/">&#171; Back to search page</a></p>
