@@ -4,6 +4,7 @@ import os
 import sentry_sdk
 from flask import Flask, make_response, redirect, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 import jinja2
 from sentry_sdk.integrations.flask import FlaskIntegration
 
@@ -111,6 +112,15 @@ class VoteRecord(db.Model):
 
         return result
 
+class Subscription(db.Model):
+    __tablename__ = "subscriptions"
+
+    id = db.Column("id", db.Integer, primary_key=True)
+    email = db.Column("email", db.String())
+    voter_reg_num = db.Column("voter_reg_num", db.Integer())
+    active = db.Column("active", db.Boolean(), default=True)
+    search_params = db.Column("search_params", db.JSON())
+    subscribe_time = db.Column("subscribe_time", db.DateTime(), default=func.now())
 
 
 def render_template_nocache(template_name, **args):
@@ -150,6 +160,17 @@ def faq():
 
     return resp
 
+@app.route('/subscribe', methods=["POST"])
+def subscribe():
+    voter_reg_num = request.values.get("voter_reg_num")
+    email = request.values.get("email")
+
+    new_sub = Subscription(voter_reg_num=voter_reg_num,
+                           email=email)
+    db.session.add(new_sub)
+    db.session.commit()
+
+    return 'success'
 
 @app.route("/search", methods=["GET"])
 def search():
