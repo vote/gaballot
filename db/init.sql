@@ -15,9 +15,11 @@ CREATE MATERIALIZED VIEW all_voters AS
 -- concurrent, postgres requires a unique index on the table. we need to include
 -- every column to guarantee uniqueness. in practice we'll only use the first
 -- two.
-CREATE UNIQUE INDEX name_index on all_voters (
+CREATE UNIQUE INDEX name_index ON all_voters (
   "Last Name", "First Name", "Middle Name", "County", "City", "Voter Registration #"
 );
+
+CREATE INDEX voter_reg_index ON all_voters ("Voter Registration #");
 
 CREATE OR REPLACE VIEW voters_and_statuses AS
 SELECT v.*, 
