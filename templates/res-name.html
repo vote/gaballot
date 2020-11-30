@@ -2,6 +2,67 @@
 
 {% block content %}
 
+<script type="text/javascript">
+  var subscribeDialogShowing = false;
+  window.addEventListener('keyup', event => {
+    if (subscribeDialogShowing && event.keyCode == 27) {
+      cancelSubscribe();
+    }
+  });
+  function show(elem) {
+    elem.style.display = '';
+  }
+  function hide(elem) {
+    elem.style.display = 'none';
+  }
+  function promptSubscribe(link, id) {
+    subscribeDialogShowing = true;
+    document.body.style.overflow = 'hidden';
+    show(document.getElementById('form-holder'));
+
+    const form = document.getElementById('subscribe-form');
+    form.voter_reg_num.value = id;
+
+    form.onsubmit = function() {
+      fetch(form.action, {
+        method: form.method,
+        body: new FormData(form)
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error(response);
+        }
+        link.innerText = 'Successfully subscribed';
+        cancelSubscribe();
+      }).catch(error => {
+        alert('There was a problem saving your subscription. Please try again later.');
+      });
+      return false;
+    }
+  }
+  function cancelSubscribe() {
+    subscribeDialogShowing = false;
+    hide(document.getElementById('form-holder'));
+    document.body.style.overflow = 'auto';
+  }
+</script>
+<style>
+  #form-holder {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 75%)
+  }
+  #subscribe-form {
+    position: absolute;
+    padding: 30px;
+    left: 20%;
+    right: 20%;
+    top: 40%;
+  }
+</style>
+
 <div class="container">
   <div class="alert alert-success" role="alert">
     <p class="mb-0">
@@ -19,10 +80,15 @@
             <i class="material-icons checkbox">check_circle</i>
           </div>
           <div class="list-text">
-            {{record.first}} {{ record.middle or '' }} {{record.last}}<br />
-            {{ record.city }}, {{record.county}} COUNTY<br />
-            {{ record.friendly_ballot_status(false) }}<br />
-            {{ record.friendly_ballot_status(true) }}
+            <p>
+              {{record.first}} {{ record.middle or '' }} {{record.last}}<br />
+              {{ record.city }}, {{record.county}} COUNTY
+            </p>
+            <p>{{ record.friendly_ballot_status(false) }}</p>
+            <p>{{ record.friendly_ballot_status(true) }}</p>
+          </div>
+          <div class="list-watch">
+            <a href="#" onclick="promptSubscribe(this, {{ record.id }}); return false;">Subscribe</a>
           </div>
         </li>
       {% endfor %}
@@ -52,6 +118,31 @@
 </div>
 
 
-
+<div id="form-holder" style="display: none;" onclick="cancelSubscribe();">
+  <form id="subscribe-form" class="card" method="POST" action="/subscribe"
+    onclick="event.stopPropagation();">
+    <div class="form-row">
+      <div class="col-md-12 col-sm-12 mb-3">
+        <label for="input-first">Email</label>
+        <input type="email" class="form-control" placeholder="Your email" name="email" id="input-email" required aria-required="true">
+        <input type="hidden" name="voter_reg_num">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-12 col-sm-12 mb-3">
+        We'll reach back out to you periodically between now and the election
+        to keep you posted on this person's voting progress.
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-6 col-sm-6 mb-3">
+        <button id="submit-subscribe" type="submit" class="btn btn-primary btn-block">Subscribe</button>
+      </div>
+      <div class="col-md-6 col-sm-6 mb-3">
+        <button onclick="cancelSubscribe(); return false;" type="button" class="btn btn-secondary btn-block">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
 
 {% endblock %}

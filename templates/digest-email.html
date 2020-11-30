@@ -1,0 +1,19 @@
+Here's an update on your friends in Georgia:
+
+<ul class="list-group list-group-flush">
+  {% for record in data %}
+    <li class="list-group-item">
+      <div class="list-text">
+        <p>
+          {{record[0].first}} {{ record[0].middle or '' }} {{record[0].last}}<br />
+          {{ record[0].city }}, {{record[0].county}} COUNTY
+        </p>
+        <p>{{ record[0].friendly_ballot_status(true) }}</p>
+        <p><a href="{{ record[1] }}">Stop getting emails about this person</a></p>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+You are receiving this because your email address was entered at
+gaballot.org. If you no longer would like to receive these emails, you can
+<a href="{{ unsub_all }}">unsubscribe</a>.

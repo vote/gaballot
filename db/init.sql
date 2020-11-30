@@ -39,4 +39,23 @@ CREATE TABLE updated_times (
   election text,
   job_time timestamp,
   file_update_time timestamp
-)
+);
+
+CREATE TABLE subscriptions (
+  id serial primary key,
+  email text,
+  voter_reg_num integer,
+
+  -- this is in case we want to enable people to subscribe to a full search
+  -- rather than an individual voter (in case their friend is not yet
+  -- showing up in the db at all):
+  search_params jsonb,
+
+  -- whether or not the subscription is active (will come in handy if we send an
+  -- email with an unsubscribe link!)
+  active boolean,
+
+  subscribe_time timestamp not null default now(),
+  last_emailed timestamp
+);
+CREATE INDEX ON subscriptions (email);
