@@ -1,8 +1,9 @@
-import logging
-import os
+import logging, os, smtplib
 
 import sentry_sdk
 from flask import Flask, make_response, redirect, render_template, request
+from flask_mail import Mail, Message
+from sqlalchemy.sql import func
 import jinja2
 from sentry_sdk.integrations.flask import FlaskIntegration
 
@@ -30,6 +31,7 @@ else:
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
+mail = Mail(app)
 
 @app.template_filter('commafy')
 def commafy_filter(v):
@@ -82,6 +84,36 @@ def subscribe():
     db.session.commit()
 
     return 'success'
+
+@app.route('/unsubscribe')
+def unsubscribe():
+    sub_id = request.values.get("sub_id")
+    secret = request.values.get("s")
+
+    if secret != Subscription.secret(sub_id):
+        return f"Invalid parameter: s={secret}, please make sure you clicked the correct link"
+
+    sub = Subscription.query.get(sub_id)
+    sub.active = False
+    db.session.commit()
+
+    return f"We will stop sending emails to {sub.email} about that voter."
+
+@app.route('/unsubscribe_all')
+def unsubscribe_all():
+    email = request.values.get("email")
+    secret = request.values.get("s")
+
+    if secret != Subscription.secret(email):
+        return f"Invalid parameter: s={s}, please make sure you clicked the correct link"
+
+    (Subscription.query
+                 .filter(Subscription.email == email)
+                 .update({Subscription.active: False}))
+    db.session.commit()
+
+    return (f"We will stop sending any emails to {email}.")
+
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -137,6 +169,51 @@ def pluralize(number, singular="", plural="s"):
     else:
         return plural
 
+DAYS_BETWEEN_EMAILS = 7
+
+def generate_digest_email(address):
+    subscriptions = (Subscription.query
+        .filter(Subscription.active)
+        .filter(Subscription.email == address))
+    data = []
+    unsub_all = ''
+    for s in subscriptions:
+        if s.voter_reg_num:
+            voter = VoteRecord.query.get(s.voter_reg_num)
+        else:
+            # TODO: gather data about this search...
+            pass
+        data.append((voter, s.unsub_url(False)))
+
+        s.last_emailed = func.now()
+        db.session.add(s)
+        # just for convenience, we generate it each time, but it will be shared
+        # across all of them
+        unsub_all = s.unsub_url(True) 
+    return Message(
+        recipients=[address],
+        subject='Ballot update for your friends in Georgia',
+        html=render_template('digest-email.html', email=address, data=data, unsub_all=unsub_all)
+    )
+
+@app.cli.command('send-emails')
+def send_emails():
+    result = db.engine.execute(f'''
+        SELECT DISTINCT(email) FROM subscriptions
+        WHERE active AND
+            extract(epoch FROM
+                (now() - greatest(last_emailed, subscribe_time))
+            )/3600 > {24*DAYS_BETWEEN_EMAILS}
+    ''')
+    with mail.connect() as conn:
+        for (email,) in result:
+            message = generate_digest_email(email)
+            try:
+                conn.send(message)
+                db.session.commit()
+            except smtplib.SMTPException as e:
+                logging.warning(f'Exception {e} while sending an email to "{email}"')
+                db.session.rollback()
 
 if __name__ == "__main__":
     app.run(debug=DEBUG)

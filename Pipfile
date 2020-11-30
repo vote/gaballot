@@ -29,6 +29,7 @@ ddtrace = "*"
 datadog = "*"
 sentry-sdk = "*"
 blinker = "*"
+flask-mail = "*"
 
 [requires]
 python_version = "3.7"
@@ -40,6 +41,7 @@ black = "black app.py"
 mypy = "mypy app.py --strict-optional"
 format = "bash -c 'pipenv run autoflake && pipenv run isort && pipenv run black'"
 serve = "python app.py"
+flask = "flask"
 
 [pipenv]
 allow_prereleases = true
