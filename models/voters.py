@@ -83,6 +83,9 @@ class VoteRecord(db.Model):
             else:
                 result += 'did not make '
             result += 'its way back to be counted.'
+            if specialElection and self.special_issued_date:
+                result += (' The ballot was mailed to them on ' +
+                    self.special_issued_date.strftime("%B %-d") + '.')
         else:
             if specialElection:
                 result += ('they are not yet listed in the absentee database. ' +
