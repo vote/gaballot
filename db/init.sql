@@ -40,3 +40,55 @@ CREATE TABLE updated_times (
   job_time timestamp,
   file_update_time timestamp
 )
+
+
+CREATE MATERIALIZED VIEW stats_by_county_day AS
+SELECT "County" as county, days_before, 
+  sum(("Application Status" = 'A' AND
+        what = 'apply_general')::integer) as applied_general,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_general' AND
+        "Ballot Style" = 'MAILED')::integer) as mailed_general,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_general' AND
+        "Ballot Style" = 'IN PERSON')::integer) as in_person_general,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_general')::integer) as total_returned_general,
+  sum(("Application Status" = 'A' AND
+        what = 'apply_special')::integer) as applied_special,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_special' AND
+        "Ballot Style" = 'MAILED')::integer) as mailed_special,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_special' AND
+        "Ballot Style" = 'IN PERSON')::integer) as in_person_special,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_special')::integer) as total_returned_special
+FROM (
+  (
+    SELECT "Application Date" as date,
+      ('2020-11-03' - "Application Date") as days_before,
+      'apply_general' as what, *
+    FROM current_status_35209
+  ) UNION ALL (
+    SELECT "Ballot Return Date" as date,
+      ('2020-11-03' - "Ballot Return Date") as days_before,
+      'return_general' as what, *
+    FROM current_status_35209
+  ) UNION ALL (
+    SELECT "Application Date" as date,
+      ('2021-01-05' - "Application Date") as days_before,
+      'apply_special' as what, *
+    FROM current_status_35211
+  ) UNION ALL (
+    SELECT "Ballot Return Date" as date,
+      ('2021-01-05' - "Ballot Return Date") as days_before,
+      'return_special' as what, *
+    FROM current_status_35211
+  )
+) q
+GROUP BY county, days_before
+ORDER BY days_before DESC;
+
+CREATE UNIQUE INDEX stats_by_county_index ON stats_by_county_day (county, days_before);
+CREATE INDEX stats_by_day_index ON stats_by_county_day (days_before);

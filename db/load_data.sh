@@ -90,6 +90,7 @@ CREATE OR REPLACE VIEW voters_${ELECTION}_current AS
 -- this will (intentionally) fail if the table already exists
 CREATE MATERIALIZED VIEW current_status_${ELECTION} AS 
   SELECT DISTINCT ON("Voter Registration #")
+    "County",
     "Voter Registration #",
     "Application Status",
     "Ballot Status",
@@ -119,6 +120,7 @@ CREATE MATERIALIZED VIEW voter_status_counters_$ELECTION AS
   GROUP BY ROLLUP ("Application Status", "Ballot Status");
 
 REFRESH MATERIALIZED VIEW voter_status_counters_$ELECTION;
+REFRESH MATERIALIZED VIEW CONCURRENTLY stats_by_county_day;
 
 INSERT INTO updated_times VALUES ('$ELECTION', now(), '`date -r STATEWIDE.csv`');
 EOM
