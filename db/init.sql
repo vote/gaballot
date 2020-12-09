@@ -22,7 +22,7 @@ CREATE UNIQUE INDEX name_index ON all_voters (
 CREATE INDEX voter_reg_index ON all_voters ("Voter Registration #");
 
 CREATE OR REPLACE VIEW voters_and_statuses AS
-SELECT v.*, 
+SELECT v.*,
          a."Application Status" as "Old App Status", a."Ballot Status" as "Old Ballot Status",
          a."Status Reason" as "Old Status Reason",
          a."Application Date" as "Old App Date", a."Ballot Issued Date" as "Old Issued Date",
@@ -39,11 +39,11 @@ CREATE TABLE updated_times (
   election text,
   job_time timestamp,
   file_update_time timestamp
-)
+);
 
 
 CREATE MATERIALIZED VIEW stats_by_county_day AS
-SELECT "County" as county, days_before, 
+SELECT "County" as county, days_before,
   sum(("Application Status" = 'A' AND
         what = 'apply_general')::integer) as applied_general,
   sum(("Ballot Status" = 'A' AND
@@ -92,3 +92,6 @@ ORDER BY days_before DESC;
 
 CREATE UNIQUE INDEX stats_by_county_index ON stats_by_county_day (county, days_before);
 CREATE INDEX stats_by_day_index ON stats_by_county_day (days_before);
+
+INSERT INTO updated_times VALUES ('35209', now(), now());
+INSERT INTO updated_times VALUES ('35211', now(), now());

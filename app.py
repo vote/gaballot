@@ -2,12 +2,10 @@ import logging
 import os
 
 import sentry_sdk
-from flask import Flask, make_response, redirect, render_template, request
-import jinja2
+from flask import Flask, make_response, render_template, request
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from analytics import statsd
-
 from models import db
 from models.voters import VoteRecord
 
@@ -30,9 +28,11 @@ else:
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
-@app.template_filter('commafy')
+
+@app.template_filter("commafy")
 def commafy_filter(v):
     return "{:,}".format(v)
+
 
 def render_template_nocache(template_name, **args):
     resp = make_response(render_template(template_name, **args))
@@ -42,26 +42,27 @@ def render_template_nocache(template_name, **args):
 
 @app.route("/")
 def index():
-    sql = '''
+    sql = """
 select
     (select count from voter_status_counters_35209
      where "Application Status" = 'A' and "Ballot Status" = 'A')
         as returned_general,
     (select count from voter_status_counters_35211
-     where "Application Status" = 'A' and "Ballot Status" = 'A') 
+     where "Application Status" = 'A' and "Ballot Status" = 'A')
         as returned_special,
     (select count from voter_status_counters_35211
-     where "Application Status" = 'A' and "Ballot Status" = 'total') 
+     where "Application Status" = 'A' and "Ballot Status" = 'total')
         as applied_special,
     (select file_update_time from updated_times
-     where election = '35211' order by job_time desc limit 1) 
-        as update_time'''
+     where election = '35211' order by job_time desc limit 1)
+        as update_time"""
     stats = db.engine.execute(sql).first()
 
-    resp = make_response(render_template("index.html", stats = stats))
+    resp = make_response(render_template("index.html", stats=stats))
     resp.headers.set("Cache-Control", "public, max-age=7200")
 
     return resp
+
 
 @app.route("/faq")
 def faq():
@@ -127,4 +128,4 @@ def pluralize(number, singular="", plural="s"):
 
 
 if __name__ == "__main__":
-    app.run(debug=DEBUG)
+    app.run(debug=DEBUG, host="0.0.0.0")

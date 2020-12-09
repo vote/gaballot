@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Usage ./load_data.sh ELECTION_NUM
 # Assumes there is a file named "env" that sets a DB variable with the psql
 # connection string. and that there's a file ELECTION_NUM.zip which is the zip
@@ -14,7 +14,7 @@ clean_up () {
 }
 trap clean_up EXIT
 
-source ./.env
+# source ./.env
 
 echo "Unzipping STATEWIDE.csv from $1.zip..."
 unzip $1.zip STATEWIDE.csv
@@ -88,7 +88,7 @@ CREATE OR REPLACE VIEW voters_${ELECTION}_current AS
   SELECT * FROM $TABLE;
 
 -- this will (intentionally) fail if the table already exists
-CREATE MATERIALIZED VIEW current_status_${ELECTION} AS 
+CREATE MATERIALIZED VIEW current_status_${ELECTION} AS
   SELECT DISTINCT ON("Voter Registration #")
     "County",
     "Voter Registration #",
