@@ -3,54 +3,46 @@
 {% block content %}
 
 <div class="container my-3">
-
-So far (as of {{ stats.update_time.strftime('%B %d at %-I:%M %p EST') }}), {{ stats.applied_special|commafy }}
-ballots have been requested for the January special election and {{
-stats.returned_special|commafy }} have been returned. There were {{
-stats.returned_general|commafy }} ballots returned early in the general
-election, so we are
-{{ (100.0 * stats.returned_special / stats.returned_general)|round(1) }}% of the way there.
-
-<div class="container py-3">
-  <form class="card p-3 p-lg-4" method="GET" action="/search">
-    <h2 class="h4">Search by name</h2>
-    <p><em>Don't use middle initials, suffixes like &ldquo;Sr,&rdquo; etc.</em></p>
-    <div class="form-row">
-      <div class="col-md-6 col-sm-12 mb-3">
-        <label for="input-first">First / given name</label>
-        <input type="text" class="form-control" placeholder="Given name" name="first" id="input-first" required aria-required="true">
+  <div class="py-3">
+    <form class="card p-3 p-lg-4 rounded" method="GET" action="/search">
+      <h2 class="h4">Search by name</h2>
+      <p><em>Don't use middle initials, suffixes like &ldquo;Sr,&rdquo; etc.</em></p>
+      <div class="form-row">
+        <div class="col-md-6 col-sm-12 mb-3">
+          <label for="input-first">First / given name</label>
+          <input type="text" class="form-control" placeholder="Given name" name="first" id="input-first" required aria-required="true">
+        </div>
+        <div class="col-md-6 col-sm-12 mb-3">
+          <label for="input-last">Last / family name</label>
+          <input type="text" class="form-control" placeholder="Family name" name="last" id="input-last" required aria-required="true">
+        </div>
       </div>
-      <div class="col-md-6 col-sm-12 mb-3">
-        <label for="input-last">Last / family name</label>
-        <input type="text" class="form-control" placeholder="Family name" name="last" id="input-last" required aria-required="true">
+      <div class="form-row">
+        <div class="col-md-12 col-sm-12 mb-3">
+          Optional fields:
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="col-md-12 col-sm-12 mb-3">
-        Optional fields:
+      <div class="form-row">
+        <div class="col-md-4 col-sm-12 mb-3">
+          <label for="input-first">Middle name/initial</label>
+          <input type="text" class="form-control" placeholder="Middle name" name="middle" id="input-middle">
+        </div>
+        <div class="col-md-4 col-sm-12 mb-3">
+          <label for="input-last">County</label>
+          <input type="text" class="form-control" placeholder="County" name="county" id="input-county">
+        </div>
+        <div class="col-md-4 col-sm-12 mb-3">
+          <label for="input-last">City</label>
+          <input type="text" class="form-control" placeholder="City" name="city" id="input-city">
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="col-md-4 col-sm-12 mb-3">
-        <label for="input-first">Middle name/initial</label>
-        <input type="text" class="form-control" placeholder="Middle name" name="middle" id="input-middle">
+      <div class="form-row">
+        <div class="col-md-12 col-sm-12 mb-3">
+          <button type="submit" class="btn btn-primary btn-block">Search by name</button>
+        </div>
       </div>
-      <div class="col-md-4 col-sm-12 mb-3">
-        <label for="input-last">County</label>
-        <input type="text" class="form-control" placeholder="County" name="county" id="input-county">
-      </div>
-      <div class="col-md-4 col-sm-12 mb-3">
-        <label for="input-last">City</label>
-        <input type="text" class="form-control" placeholder="City" name="city" id="input-city">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col-md-12 col-sm-12 mb-3">
-        <button type="submit" class="btn btn-primary btn-block">Search by name</button>
-      </div>
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
 
 </div>
 

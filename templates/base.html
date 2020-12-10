@@ -56,22 +56,87 @@
 
     <div id="content">
       {% block intro %}
-      <div class="container pt-5 mb-3">
-        <p class="m-0">
-          On January 5th there will be a statewide runoff election in Georgia. Let's get all of Georgia voting in this
-          important election! <a href="https://www.facebook.com/search/top?q=my%20friends%20who%20live%20in%20georgia" target="_blank" rel="noopener">Check which of your Facebook friends live in Georgia</a>, then use the search box below to look them up
-          and see if they have sent in their mail-in ballots.
-          <br><br>
-          All of this data comes from the <a href="https://elections.sos.ga.gov/Elections/voterabsenteefile.do">publicly
-          available files</a> published by the Georgia Secretary of State. If
-          you are wanting to track your own ballot status, consider utilizing
-          <a href="https://georgia.ballottrax.net/voter/">Georgia's official
-          site for this purpose</a>.
-        </p>
-      </div>
+        <!-- QUESTION: Why does my override for bg-danger not work but btn-danger does? -->
+        <div class="text-center text-white py-3" style="background-color: #e12814;" >
+          <!-- QUESTION: Should we consider the pre-Eday VA countdown ticker here? -->
+          <h1>The Georgia runoff is on January 5th</h1>
+          <h2>This election will determine who controls the U.S. Senate.</h2>
+        </div>
+
+        <div class="container pt-3 mb-3">
+          <div class="card rounded mb-3">
+            <div class="card-body">
+              <h3 class="card-title mt-0">What's happening</h5>
+              <p class="card-text">Runoff elections are all about turnout: we have <strong>XX days</strong> left to make sure every Georgia voter can make their voice heard. And we're behind: by this point in the November election, <strong>{{ stats.returned_general|commafy }} voters</strong> had already voted. But only <strong>{{ stats.returned_special|commafy }} voters</strong> have voted so far in the runoff. Help us catch up!</p>
+
+              <!-- Left in as placeholder -->
+              <p class='mb-0'>
+                So far, <strong>{{ stats.applied_special|commafy }}</strong>
+                ballots have been requested for the January special election and <strong>{{
+                stats.returned_special|commafy }} ballots</strong> have been returned. There were <strong>{{
+                stats.returned_general|commafy }} ballots </strong> returned early in the general
+                election, so we are only
+                <strong>{{ (100.0 * stats.returned_special / stats.returned_general)|round(1) }}%</strong> of the way there.
+                <em>(As of {{ stats.update_time.strftime('%B %d at %-I:%M %p EST') }}.)</em>
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 class='text-center'>Do your part: Help your friends in Georgia vote</h3>
+            <hr class='mb-4'>
+          </div>
+
+          <div>
+            <h4>1️⃣ Who do you know in Georgia?</h4>
+            <p>Check which of your Facebook friends lives in Georgia.</p>
+            <a href="https://www.facebook.com/search/top?q=my%20friends%20who%20live%20in%20georgia" target="_blank" rel="noopener" class="btn text-white mb-3" style="background-color: #e12814;">Find friends in Georgia on Facebook</a>
+            <p><em>Did you know it's possible to find your friends on Facebook with a text search? Click the button to run the search, we won't post anything to your wall or spam your friends.</em></p>
+            <!-- TODO: Add something about needing to be logged into FB, otherwise you get an error -->
+            <!-- TODO: Add something about what the search is, if they are hesitant to click the button -->
+            <!-- TODO: Deep link to FB on mobile? -->
+            <hr class='my-4'>
+          </div>
+
+          <div class='mt-4'>
+            <h4>2️⃣ Let them know there's an election</h4>
+            <p>In most elections, over 30% of voters don't know when the election is. Make sure your friends know that the election is on <strong>Tuesday, January 5, 2021</strong>. Anyone can vote early starting on <strong>Monday, December 14, 2020</strong>.</p>
+            <!-- TODO: Add image of copy for text and email, make "copyable" -->
+
+            <!-- TODO: See if this works, I have an Android rn -->
+            <a href="sms://body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F" target="_blank" rel="noopener" class="btn text-white mb-3" style="background-color: #e12814;">Text a friend</a>
+            
+            <a href="mailto:?to=&subject=Vote%20early%20in%20the%20Georgia%20runoff%20election&body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F" target="_blank" rel="noopener" class="btn text-white mb-3" style="background-color: #e12814;">Email a friend</a>
+            
+            <hr class='my-4'>
+          </div>
+
+          <div class='mt-4'>
+            <h4>3️⃣ Follow up!</h4>
+            <p>Research shows that people vote when you ask them to. Make sure to follow up and ask your friends if they've voted!</p>
+
+            {% block content %}{% endblock %}
+          </div>
+
+          <div class='mt-4'>
+            <h4>4️⃣ Support our friends on the ground</h4>
+            <p>Once you've talked to your friends, volunteer with one of these amazing organizations working in Georgia to make sure every voice is heard and every vote is counted.</p>
+            <!-- TODO: Insert logos here -->
+          </div>
+
+          ///<br><br>
+
+          <!-- For FAQ? -->
+          <p class="m-0">
+            All of this data comes from the <a href="https://elections.sos.ga.gov/Elections/voterabsenteefile.do">publicly
+            available files</a> published by the Georgia Secretary of State. If
+            you are wanting to track your own ballot status, consider utilizing
+            <a href="https://georgia.ballottrax.net/voter/">Georgia's official
+            site for this purpose</a>.
+          </p>
+        </div>
       {% endblock %}
 
-      {% block content %}{% endblock %}
     </div>
 
     <footer id="footer" class="px-3 py-5 px-md-5 mt-5">
