@@ -76,8 +76,8 @@
                 stats.returned_special|commafy }} ballots</strong> have been returned. There were <strong>{{
                 stats.returned_general|commafy }} ballots </strong> returned early in the general
                 election, so we are only
-                <strong>{{ (100.0 * stats.returned_special / stats.returned_general)|round(1) }}%</strong> of the way there.
-                <em>(As of {{ stats.update_time.strftime('%B %d at %-I:%M %p EST') }}.)</em>
+                <strong>{{ (100.0 * stats.returned_special / stats.returned_general)|round(1) }}%</strong> of the way there
+                <em>(as of {{ stats.update_time.strftime('%B %-d at %-I:%M %p EST') }})</em>.
               </p>
             </div>
           </div>
