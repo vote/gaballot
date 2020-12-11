@@ -2,18 +2,18 @@
 
 {% block content %}
 
-<div class="container-md my-3">
+<div class="container my-3">
   <div class="pt-3 mb-3">
-    <div class="card rounded mb-3">
+    <div class="card rounded mb-3 text-center">
       <div class="card-body">
         <h3 class="card-title mt-0">What's happening</h5>
-          <p class="card-text" id='countdown'></p>
+          <p class="card-text" id='countdown'>(copy inserted from scripts.js)</p>
 
           <!-- TODO: Decide which p copy to keep...or tweak copy. And get stats values right? -->
-          <p class="card-text">And we're behind: by this point in the November election,
+          <!-- <p class="card-text">And we're behind: by this point in the November election,
             <strong>{{ stats.returned_general|commafy }} voters</strong> had already voted. But only
             <strong>{{ stats.returned_special|commafy }} voters</strong> have voted so far in the
-            runoff. Help us catch up!</p>
+            runoff. Help us catch up!</p> -->
 
           <p class="card-text mb-0">
             So far, <strong>{{ stats.applied_special|commafy }} ballots</strong> have been requested
@@ -31,7 +31,7 @@
 
     <div>
       <h3 class='text-center'>Do your part: Help your friends in Georgia vote</h3>
-      <hr class='mb-4'>
+      <hr class='my-5'>
     </div>
 
     <div>
@@ -44,26 +44,49 @@
       <p><em>Did you know it's possible to find your friends on Facebook with a text search? Click
           the button above to run the search, or just go to Facebook and type "my friends in
           Georgia" into the search box.</em></p>
-      <hr class='my-4'>
+      <hr class="my-5">
     </div>
 
-    <div class='mt-4'>
+    <div class="mt-4">
       <h4>2️⃣ Let them know there's an election</h4>
       <p>In most elections, over 30% of voters don't know when the election is. Make sure your
         friends know that the election is on <strong>Tuesday, January 5, 2021</strong>. Anyone can
         vote early in-person starting on <strong>Monday, December 14, 2020</strong>.</p>
-      <!-- TODO: Add image of copy for text and email, make "copyable" -->
 
-      <!-- TODO: See if this works, I have an Android rn -->
-      <a href="sms://body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F"
-        target="_blank" rel="noopener" class="btn text-white mb-3"
-        style="background-color: #e12814;">Text a friend</a>
+      <div class="d-flex flex-column justify-content-end align-items-end">
+        <div class="card bg-primary rounded-lg text-white mb-2" style="width: 18rem;">
+          <div class="card-body">
+            <p class="card-text">
+              Hi Emily! I'm sure you already know that the Georgia runoff election, the one that
+              determines who controls the Senate, is on January 5th. I just wanted to pass along
+              this link to find your early voting location -- you can start voting today!<br><br>
+              <strong>www.voteamerica.com/where-to-vote</strong></p>
+          </div>
+        </div>
 
-      <a href="mailto:?to=&subject=Vote%20early%20in%20the%20Georgia%20runoff%20election&body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F"
-        target="_blank" rel="noopener" class="btn text-white mb-3"
-        style="background-color: #e12814;">Email a friend</a>
+        <!-- TODO: See if this works, I have an Android rn -->
+        <a href="sms://body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F"
+          target="_blank" rel="noopener" class="btn text-white mb-3"
+          style="background-color: #e12814;">Text a friend</a>
+      </div>
 
-      <hr class='my-4'>
+      <div>
+        <div class="card rounded-lg mb-2" style="width: 18rem;">
+          <div class="card-body">
+            <p class="card-text">
+              Hi Emily! I'm sure you already know that the Georgia runoff election, the one that
+              determines who controls the Senate, is on January 5th. I just wanted to pass along
+              this link to find your early voting location -- you can start voting today!<br><br>
+              <strong>www.voteamerica.com/where-to-vote</strong></p>
+          </div>
+        </div>
+
+        <a href="mailto:?to=&subject=Vote%20early%20in%20the%20Georgia%20runoff%20election&body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F"
+          target="_blank" rel="noopener" class="btn text-white mb-3"
+          style="background-color: #e12814;">Email a friend</a>
+      </div>
+
+      <hr class='my-5'>
     </div>
 
     <div class='mt-4'>
@@ -115,13 +138,27 @@
           </div>
         </form>
       </div>
+
+      <hr class='my-5'>
     </div>
 
     <div class='mt-4'>
       <h4>4️⃣ Support our friends on the ground</h4>
       <p>Once you've talked to your friends, volunteer with one of these amazing organizations
         working in Georgia to make sure every voice is heard and every vote is counted.</p>
-      <!-- TODO: Insert logos here -->
+      <div class="d-flex justify-content-between align-items-center mb-5">
+        <a href="https://newgeorgiaproject.org/volunteer/become-a-volunteer/" target="_blank" rel="noopener noreferrer">
+          <img src="/static/new-georgia-project-logo.png" alt="New Georgia Project logo">
+        </a>
+        <a href="https://fairfight.com/join-our-fight/" target="_blank" rel="noopener noreferrer">
+          <img src="/static/fair-fight-logo.png" alt="Fair Fight logo">
+        </a>
+      </div>
+      <div class="d-flex justify-content-center">
+        <a href="https://www.voteamerica.com/volunteer/" target="_blank" rel="noopener noreferrer">
+          <img src="/static/voteamerica-logo.png" alt="VoteAmerica logo">
+        </a> 
+      </div>
     </div>
   </div>
 </div>
