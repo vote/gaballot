@@ -90,7 +90,7 @@ class VoteRecord(db.Model):
             if specialElection:
                 result += ('they are not yet listed in the absentee database. ' +
                     'Please encourage them to ' +
-                    jinja2.Markup('<a href="https://ballotrequest.sos.ga.gov/">apply for a mail-in ballot</a>!'))
+                    jinja2.Markup('<a href="https://ballotrequest.sos.ga.gov/" target="_blank" rel="noopener noreferrer">apply for a mail-in ballot</a>!'))
             else:
                 result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
 
