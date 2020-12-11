@@ -3,47 +3,104 @@
 {% block content %}
 
 <div class="container my-3">
-  <div class="py-3">
-    <form class="card p-3 p-lg-4 rounded" method="GET" action="/search">
-      <h2 class="h4">Search by name</h2>
-      <p><em>Don't use middle initials, suffixes like &ldquo;Sr,&rdquo; etc.</em></p>
-      <div class="form-row">
-        <div class="col-md-6 col-sm-12 mb-3">
-          <label for="input-first">First / given name</label>
-          <input type="text" class="form-control" placeholder="Given name" name="first" id="input-first" required aria-required="true">
-        </div>
-        <div class="col-md-6 col-sm-12 mb-3">
-          <label for="input-last">Last / family name</label>
-          <input type="text" class="form-control" placeholder="Family name" name="last" id="input-last" required aria-required="true">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="col-md-12 col-sm-12 mb-3">
-          Optional fields:
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="col-md-4 col-sm-12 mb-3">
-          <label for="input-first">Middle name/initial</label>
-          <input type="text" class="form-control" placeholder="Middle name" name="middle" id="input-middle">
-        </div>
-        <div class="col-md-4 col-sm-12 mb-3">
-          <label for="input-last">County</label>
-          <input type="text" class="form-control" placeholder="County" name="county" id="input-county">
-        </div>
-        <div class="col-md-4 col-sm-12 mb-3">
-          <label for="input-last">City</label>
-          <input type="text" class="form-control" placeholder="City" name="city" id="input-city">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="col-md-12 col-sm-12 mb-3">
-          <button type="submit" class="btn btn-primary btn-block">Search by name</button>
-        </div>
-      </div>
-    </form>
-  </div>
+  <div class="container pt-3 mb-3">
+    <div class="card rounded mb-3">
+      <div class="card-body">
+        <h3 class="card-title mt-0">What's happening</h5>
+        <p class="card-text">Runoff elections are all about turnout: we have <strong>XX days</strong> left to make sure every Georgia voter can make their voice heard. And we're behind: by this point in the November election, <strong>{{ stats.returned_general|commafy }} voters</strong> had already voted. But only <strong>{{ stats.returned_special|commafy }} voters</strong> have voted so far in the runoff. Help us catch up!</p>
 
+        <!-- Left in as placeholder -->
+        <p class='mb-0'>
+          So far, <strong>{{ stats.applied_special|commafy }}</strong>
+          ballots have been requested for the January special election and <strong>{{
+          stats.returned_special|commafy }} ballots</strong> have been returned. There were <strong>{{
+          stats.returned_general|commafy }} ballots </strong> returned early in the general
+          election, so we are only
+          <strong>{{ (100.0 * stats.returned_special / stats.returned_general)|round(1) }}%</strong> of the way there
+          <em>(as of {{ stats.update_time.strftime('%B %-d at %-I:%M %p EST') }})</em>.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class='text-center'>Do your part: Help your friends in Georgia vote</h3>
+      <hr class='mb-4'>
+    </div>
+
+    <div>
+      <h4>1️⃣ Who do you know in Georgia?</h4>
+      <p>Check which of your Facebook friends lives in Georgia.</p>
+      <a href="https://www.facebook.com/search/top?q=my%20friends%20who%20live%20in%20georgia" target="_blank" rel="noopener" class="btn text-white mb-3" style="background-color: #e12814;">Find friends in Georgia on Facebook</a>
+      <p><em>Did you know it's possible to find your friends on Facebook with a text search? Click the button to run the search, or just go to Facebook and type "my friends in Georgia" into the search box.</em></p>
+      <!-- TODO: Deep link to FB on mobile? -->
+      <hr class='my-4'>
+    </div>
+
+    <div class='mt-4'>
+      <h4>2️⃣ Let them know there's an election</h4>
+      <p>In most elections, over 30% of voters don't know when the election is. Make sure your friends know that the election is on <strong>Tuesday, January 5, 2021</strong>. Anyone can vote early starting on <strong>Monday, December 14, 2020</strong>.</p>
+      <!-- TODO: Add image of copy for text and email, make "copyable" -->
+
+      <!-- TODO: See if this works, I have an Android rn -->
+      <a href="sms://body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F" target="_blank" rel="noopener" class="btn text-white mb-3" style="background-color: #e12814;">Text a friend</a>
+      
+      <a href="mailto:?to=&subject=Vote%20early%20in%20the%20Georgia%20runoff%20election&body=I%27m%20sure%20you%20already%20know%20that%20the%20Georgia%20runoff%20election%2C%20the%20one%20that%20determines%20who%20controls%20the%20Senate%2C%20is%20on%20January%205.%20I%20just%20wanted%20to%20pass%20along%20this%20link%20to%20find%20your%20early%20voting%20location%20--%20you%20can%20start%20voting%20today%21%20https%3A%2F%2Fwww.voteamerica.com%2Fwhere-to-vote%2F" target="_blank" rel="noopener" class="btn text-white mb-3" style="background-color: #e12814;">Email a friend</a>
+      
+      <hr class='my-4'>
+    </div>
+
+    <div class='mt-4'>
+      <h4>3️⃣ Follow up!</h4>
+      <p>Research shows that people vote when you ask them to. Make sure to follow up and ask your friends if they've voted!</p>
+        <div class="py-3">
+          <form class="card p-3 p-lg-4 rounded" method="GET" action="/search">
+            <h2 class="h4">Search by name</h2>
+            <p><em>Don't use middle initials, suffixes like &ldquo;Sr,&rdquo; etc.</em></p>
+            <div class="form-row">
+              <div class="col-md-6 col-sm-12 mb-3">
+                <label for="input-first">First / given name</label>
+                <input type="text" class="form-control" placeholder="Given name" name="first" id="input-first" required aria-required="true">
+              </div>
+              <div class="col-md-6 col-sm-12 mb-3">
+                <label for="input-last">Last / family name</label>
+                <input type="text" class="form-control" placeholder="Family name" name="last" id="input-last" required aria-required="true">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-12 col-sm-12 mb-3">
+                Optional fields:
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-4 col-sm-12 mb-3">
+                <label for="input-first">Middle name/initial</label>
+                <input type="text" class="form-control" placeholder="Middle name" name="middle" id="input-middle">
+              </div>
+              <div class="col-md-4 col-sm-12 mb-3">
+                <label for="input-last">County</label>
+                <input type="text" class="form-control" placeholder="County" name="county" id="input-county">
+              </div>
+              <div class="col-md-4 col-sm-12 mb-3">
+                <label for="input-last">City</label>
+                <input type="text" class="form-control" placeholder="City" name="city" id="input-city">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-12 col-sm-12 mb-3">
+                <button type="submit" class="btn btn-primary btn-block">Search by name</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class='mt-4'>
+        <h4>4️⃣ Support our friends on the ground</h4>
+        <p>Once you've talked to your friends, volunteer with one of these amazing organizations working in Georgia to make sure every voice is heard and every vote is counted.</p>
+        <!-- TODO: Insert logos here -->
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
