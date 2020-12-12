@@ -14,7 +14,12 @@ clean_up () {
 }
 trap clean_up EXIT
 
-# source ./.env
+if [[ -z "$DATABASE_URL" ]]
+	then source ./.env
+	echo "loaded .env, DB = $DATABASE_URL"
+else
+	echo "skipping .env as DATABASE_URL ($DATABASE_URL) is already set"
+fi
 
 echo "Unzipping STATEWIDE.csv from $1.zip..."
 unzip $1.zip STATEWIDE.csv
