@@ -21,11 +21,8 @@
           </div>
           <div class="list-text">
             {{record.first}} {{ record.middle or '' }} {{record.last}}<br />
-            {{ record.city }}, {{record.county}} COUNTY
-            <ul class='pl-3'>
-              <li>{{ record.friendly_ballot_status(false) }}</li>
-              <li>{{ record.friendly_ballot_status(true) }}</li>
-            </ul>
+            {{ record.city }}, {{record.county}} COUNTY<br />
+            {{ record.friendly_ballot_status(true) }}
           </div>
         </li>
       {% endfor %}
