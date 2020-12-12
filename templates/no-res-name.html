@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container">
-  <div class="alert alert-warning" role="alert">
+  <div class="alert alert-warning mt-5" role="alert">
     <h4 class="alert-heading">No results</h4>
     <p>Sorry, there are no results for <strong>{{first}} {{middle}} {{last}}</strong>{% if city or county %} in
       <strong>{{ city }}{% if city and county %}, {% endif %}{{ county }}</strong>{% endif %}. Please check for typos and try again.
@@ -11,20 +11,25 @@
     <p>
       If you're sure you got it right, please reach out to them and find out
       about their voting plans. They can request an absentee ballot online,
-      using <a href="https://ballotrequest.sos.ga.gov/">ballotrequest.sos.ga.gov</a>.
+      using <a href="https://ballotrequest.sos.ga.gov/" target="_blank" rel="noopener noreferrer">ballotrequest.sos.ga.gov</a>.
     </p>
     <p class="my-0">
       It can take a few days for results to show up here. If all else fails,
       they may want to
-      <a href="https://www.voteamerica.com/local-election-offices/GA/">contact
+      <a href="https://www.voteamerica.com/local-election-offices/GA/" target="_blank" rel="noopener noreferrer">contact
       their Local Elections Office</a>.
     </p>
   </div>
+
+  <div class="alert alert-info" role="alert">
+    All of this data comes from the <a href="https://elections.sos.ga.gov/Elections/voterabsenteefile.do  target="_blank" rel="noopener noreferrer"">publicly
+    available files</a> published by the Georgia Secretary of State. If
+    you are wanting to track your own ballot status, consider utilizing
+    <a href="https://georgia.ballottrax.net/voter/" target="_blank" rel="noopener noreferrer">Georgia's official
+    site for this purpose</a>.
+  </div>
+  
   <p class="my-5"><a href="/">&#171; Back to search page</a></p>
 </div>
-
-
-
-
 
 {% endblock %}

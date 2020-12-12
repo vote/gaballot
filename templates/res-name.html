@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container pt-3">
   <div class="alert alert-success" role="alert">
     <p class="mb-0">
       Found {% if were_more_records %}more than 25{% else %}{{results|length}}{% endif %}
@@ -11,7 +11,8 @@
       <strong>{{ city }}{% if city and county %}, {% endif %}{{ county }}</strong>{% endif %}.
     </p>
   </div>
-  <div class="card">
+
+  <div class="card rounded">
     <ul class="list-group list-group-flush">
       {% for record in results %}
         <li class="list-group-item">
@@ -21,7 +22,6 @@
           <div class="list-text">
             {{record.first}} {{ record.middle or '' }} {{record.last}}<br />
             {{ record.city }}, {{record.county}} COUNTY<br />
-            {{ record.friendly_ballot_status(false) }}<br />
             {{ record.friendly_ballot_status(true) }}
           </div>
         </li>
@@ -30,28 +30,34 @@
   </div>
 
   {% if were_more_records %}
-  <p>
-    (There were more than 25 results, so only the first 25 are shown)
+  <p class="mt-3">
+    <em>(Note: There were more than 25 results, so only the first 25 are shown.)</em>
   </p>
   {% endif %}
 
-  <div class="alert alert-warning bottom-warning" role="alert">
+  <div class="alert alert-warning bottom-warning mt-3" role="alert">
     <p>
       Not on the list? Please reach out to them and find out about their voting plans.
       They can request an absentee ballot online, using
-      <a href="https://ballotrequest.sos.ga.gov/">ballotrequest.sos.ga.gov</a>.
+      <a href="https://ballotrequest.sos.ga.gov/" target="_blank" rel="noopener noreferrer">ballotrequest.sos.ga.gov</a>.
     </p>
-    <p>
+    <p class="mb-0">
       It can take a few days for results to show up here.
       If they mailed their ballot more than 7 days ago, or voted in person more than 3 business days ago,
-      they may want to <a href="https://www.voteamerica.com/local-election-offices/GA/">contact their Local
+      they may want to <a href="https://www.voteamerica.com/local-election-offices/GA/" target="_blank" rel="noopener noreferrer">contact their Local
       Elections Office</a>.
     </p>
   </div>
+
+  <div class="alert alert-info" role="alert">
+    All of this data comes from the <a href="https://elections.sos.ga.gov/Elections/voterabsenteefile.do  target="_blank" rel="noopener noreferrer"">publicly
+    available files</a> published by the Georgia Secretary of State. If
+    you are wanting to track your own ballot status, consider utilizing
+    <a href="https://georgia.ballottrax.net/voter/" target="_blank" rel="noopener noreferrer">Georgia's official
+    site for this purpose</a>.
+  </div>
+  
   <p class="my-3"><a href="/">&#171; Back to search page</a></p>
 </div>
-
-
-
 
 {% endblock %}
