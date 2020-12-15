@@ -29,6 +29,7 @@ ddtrace = "*"
 datadog = "*"
 sentry-sdk = "*"
 blinker = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.7"

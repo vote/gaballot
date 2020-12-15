@@ -212,3 +212,17 @@ input {
 h3 {
   margin-top: 40px;
 }
+
+.card-text, .card-title {
+  text-align: left;
+}
+
+@media only screen and (max-width: 600px) {
+  .vol-links {
+    flex-direction: column;
+  }
+}
+
+#homepage-graph {
+  height: 320px;
+}
