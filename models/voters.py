@@ -1,6 +1,8 @@
 from models import db
+from sqlalchemy import or_
 
 import jinja2
+
 
 class VoteRecord(db.Model):
     __tablename__ = "voters_and_statuses"
@@ -30,11 +32,18 @@ class VoteRecord(db.Model):
 
     @staticmethod
     def lookup(last, first, middle, city, county, limit):
-        return (VoteRecord.query.filter(VoteRecord.first.like(f"{first}%"))
+        return (
+            VoteRecord.query.filter(VoteRecord.first.like(f"{first}%"))
             .filter(VoteRecord.last == last)
             .filter(VoteRecord.middle.like(f"{middle}%"))
             .filter(VoteRecord.county.like(f"{county}%"))
             .filter(VoteRecord.city.like(f"{city}%"))
+            .filter(
+                or_(
+                    VoteRecord.special_app_status.isnot(None),
+                    VoteRecord.special_ballot_status.isnot(None),
+                )
+            )
             .order_by(VoteRecord.last, VoteRecord.first)
             .limit(limit)
             .all()
@@ -51,47 +60,76 @@ class VoteRecord(db.Model):
     def friendly_first(self):
         return self.first.capitalize()
 
-    def friendly_ballot_status(self, specialElection):
-        if specialElection:
+    def icon(self, special_election):
+        if special_election:
+            app_status = self.special_app_status
+            ballot_status = self.special_ballot_status
+            ballot_style = self.special_ballot_style
+        else:
+            app_status = self.general_app_status
+            ballot_status = self.general_ballot_status
+            ballot_style = self.general_ballot_style
+
+        if ballot_status == "A":
+            return "check_circle"
+        elif ballot_status:
+            return "report_problem"
+        elif app_status == "A":
+            return "schedule"
+        else:
+            return "help"
+
+    def friendly_ballot_status(self, special_election):
+        if special_election:
             app_status = self.special_app_status
             ballot_status = self.special_ballot_status
             status_reason = self.special_status_reason
             ballot_style = self.special_ballot_style
             return_date = self.special_return_date
-            result = 'For the January special election, '
+            result = "For the January runoff election, "
         else:
             app_status = self.general_app_status
             ballot_status = self.general_ballot_status
             status_reason = self.general_status_reason
             ballot_style = self.general_ballot_style
             return_date = self.general_return_date
-            result = 'In November\'s general election, '
-        
-        if ballot_status == 'A':
-            result += (self.friendly_first() +
-                '\'s ' + ballot_style.lower() +
-                ' ballot was successfully cast on ' + 
-                return_date.strftime("%B %-d") + '.')
+            result = "In November's general election, "
+
+        if ballot_status == "A":
+            result += (
+                self.friendly_first()
+                + "'s "
+                + ballot_style.lower()
+                + " ballot was successfully cast on "
+                + return_date.strftime("%B %-d")
+                + "."
+            )
         elif ballot_status:
-            result += ('there may have been a problem with their ballot. ' +
-                'Here\'s the explanation we are seeing: "' + status_reason + '".')
-        elif app_status == 'A':
-            result += (self.friendly_first() +
-                ' applied to vote by mail, but their ballot ')
-            if specialElection:
-                result += 'has not yet made '
+            result += (
+                "there may have been a problem with their ballot. "
+                + "Here's the explanation we are seeing: \""
+                + (status_reason or "(no reason provided)")
+                + '".'
+            )
+        elif app_status == "A":
+            result += (
+                self.friendly_first() + " applied to vote by mail, but their ballot "
+            )
+            if special_election:
+                result += "has not yet made "
             else:
-                result += 'did not make '
-            result += 'its way back to be counted.'
-            if specialElection and self.special_issued_date:
-                result += (' The ballot was mailed to them on ' +
-                    self.special_issued_date.strftime("%B %-d") + '.')
+                result += "did not make "
+            result += "its way back to be counted."
+            if special_election and self.special_issued_date:
+                result += (
+                    " The ballot was mailed to them on "
+                    + self.special_issued_date.strftime("%B %-d")
+                    + "."
+                )
         else:
-            if specialElection:
-                result += ('they are not yet listed in the absentee database. ' +
-                    'Please encourage them to ' +
-                    jinja2.Markup('<a href="https://ballotrequest.sos.ga.gov/" target="_blank" rel="noopener noreferrer">apply for a mail-in ballot</a>!'))
+            if special_election:
+                result += "they are not yet listed in the absentee database."
             else:
-                result += 'their ballot status is unknown. This could mean that they voted in person, or that they did not vote.'
+                result += "their ballot status is unknown. This could mean that they voted in person, or that they did not vote."
 
         return result

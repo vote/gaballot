@@ -1,6 +1,9 @@
 up:
 	docker-compose up --build
 
+upprod:
+	docker-compose -f docker-compose-prod.yml up --build
+
 shell:
 	docker-compose exec app bash
 

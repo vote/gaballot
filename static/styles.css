@@ -135,8 +135,24 @@ img.brand {
 .bg-dark, .navbar-dark {
   background-color: black;
 }
-.checkbox {
+
+.icon-check_circle {
   color: #018845;
+  vertical-align: bottom;
+}
+
+.icon-report_problem {
+  color: #f8ba34;
+  vertical-align: bottom;
+}
+
+.icon-help {
+  color: #f8ba34;
+  vertical-align: bottom;
+}
+
+.icon-schedule {
+  color: #343434;
   vertical-align: bottom;
 }
 
@@ -211,4 +227,18 @@ input {
 
 h3 {
   margin-top: 40px;
+}
+
+.card-text, .card-title {
+  text-align: left;
+}
+
+@media only screen and (max-width: 600px) {
+  .vol-links {
+    flex-direction: column;
+  }
+}
+
+#homepage-graph {
+  height: 320px;
 }

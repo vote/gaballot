@@ -1,13 +1,17 @@
 import logging
 import os
+from datetime import datetime
+import math
 
 import sentry_sdk
 from flask import Flask, make_response, render_template, request
 from sentry_sdk.integrations.flask import FlaskIntegration
+import pytz
 
 from analytics import statsd
 from models import db
 from models.voters import VoteRecord
+from data import statewide_by_day
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -42,24 +46,26 @@ def render_template_nocache(template_name, **args):
 
 @app.route("/")
 def index():
-    sql = """
-select
-    (select count from voter_status_counters_35209
-     where "Application Status" = 'A' and "Ballot Status" = 'A')
-        as returned_general,
-    (select count from voter_status_counters_35211
-     where "Application Status" = 'A' and "Ballot Status" = 'A')
-        as returned_special,
-    (select count from voter_status_counters_35211
-     where "Application Status" = 'A' and "Ballot Status" = 'total')
-        as applied_special,
-    (select file_update_time from updated_times
-     where election = '35211' order by job_time desc limit 1)
-        as update_time"""
-    stats = db.engine.execute(sql).first()
+    election = datetime(2021, 1, 5, tzinfo=pytz.timezone("US/Eastern"))
+    days_until_election = math.ceil(
+        (election - datetime.now(tz=pytz.timezone("US/Eastern"))).total_seconds()
+        / (60 * 60 * 24)
+    )
 
-    resp = make_response(render_template("index.html", stats=stats))
-    resp.headers.set("Cache-Control", "public, max-age=7200")
+    data = statewide_by_day(days_until_election)
+
+    # Use yesterday's data, not today's -- we don't have today's data yet
+    current_data = data[days_until_election + 1]
+
+    resp = make_response(
+        render_template(
+            "index.html",
+            days_until_election=days_until_election,
+            data=data,
+            current_data=current_data,
+        )
+    )
+    resp.headers.set("Cache-Control", "public, max-age=900")
 
     return resp
 
@@ -67,7 +73,7 @@ select
 @app.route("/faq")
 def faq():
     resp = make_response(render_template("contact.html"))
-    resp.headers.set("Cache-Control", "public, max-age=7200")
+    resp.headers.set("Cache-Control", "public, max-age=900")
 
     return resp
 
