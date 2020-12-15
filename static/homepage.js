@@ -1,5 +1,5 @@
 (function () {
-  var rows = [["Days Before", "General", "Runoff"]];
+  var rows = [["Days Before", "General 2020", "Runoff 2021"]];
   var daysBeforeSeries = Object.keys(window.HOMEPAGE_GRAPH_DATA);
 
   daysBeforeSeries.forEach(function (daysBefore) {
