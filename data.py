@@ -2,14 +2,14 @@ from sqlalchemy.sql import text
 from models import db
 
 
-def statewide_by_day(current_days_before):
+def statewide_by_day():
     sql = """
         SELECT * FROM cumulative_stats_by_day
-        WHERE days_before < 45 AND days_before > :current_days_before;
+        WHERE days_before < 45 AND days_before >= (select '2021-01-05' - max(date(file_update_time - interval '18 hours')) from updated_times);
     """
 
     results = {}
-    for result in db.engine.execute(text(sql), current_days_before=current_days_before):
+    for result in db.engine.execute(text(sql)):
         results[result["days_before"]] = {
             "total_general": int(result["total_returned_general"]),
             "total_special": int(result["total_returned_special"]),
