@@ -52,10 +52,8 @@ def index():
         / (60 * 60 * 24)
     )
 
-    data = statewide_by_day(days_until_election)
-
-    # Use yesterday's data, not today's -- we don't have today's data yet
-    current_data = data[days_until_election + 1]
+    data = statewide_by_day()
+    current_data = data[min(data.keys())]
 
     resp = make_response(
         render_template(
