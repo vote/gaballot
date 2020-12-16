@@ -5,7 +5,7 @@ from models import db
 def statewide_by_day():
     sql = """
         SELECT * FROM cumulative_stats_by_day
-        WHERE days_before < 45 AND days_before >= (select '2021-01-05' - max(date(file_update_time)) from updated_times);
+        WHERE days_before < 45 AND days_before >= (select '2021-01-05' - max(date(file_update_time - interval '18 hours')) from updated_times);
     """
 
     results = {}
