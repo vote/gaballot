@@ -21,7 +21,14 @@
           </div>
           <div class="list-text">
             {{record.first}} {{ record.middle or '' }} {{record.last}}<br />
-            {{ record.city }}, {{record.county}} COUNTY<br />
+            {{ record.city }}, {{record.county}} COUNTY
+            <br  />
+            {% if record.county in county_alerts %}
+              <div class="county-alert">
+                <i class="material-icons icon-error">error</i>
+                <a href="{{county_alerts[record.county]}}">County-wide Election Update</a>
+              </div>
+            {% endif %}
             {{ record.friendly_ballot_status(true) }}
           </div>
         </li>

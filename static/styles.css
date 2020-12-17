@@ -172,6 +172,11 @@ img.brand {
   flex: 1;
 }
 
+.county-alert i {
+  vertical-align: middle;
+  color: darkorange;
+}
+
 input {
   text-transform: uppercase;
 }

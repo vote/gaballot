@@ -32,6 +32,10 @@ else:
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
+COUNTY_ALERTS = {
+    # 'FULTON': 'https://example.com',
+}
+
 
 @app.template_filter("commafy")
 def commafy_filter(v):
@@ -112,6 +116,7 @@ def search():
                 city=city,
                 results=records[:25],
                 were_more_records=(len(records) > 25),
+                county_alerts=COUNTY_ALERTS,
             )
 
     logging.info("Invalid request")
