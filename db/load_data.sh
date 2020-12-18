@@ -6,6 +6,10 @@
 # https://elections.sos.ga.gov/Elections/voterabsenteefile.do
 
 set -e # stop immediately on error...
+db () { # and similarly for psql...
+  psql -a -q -v ON_ERROR_STOP=1 $DATABASE_URL $@
+}
+
 clean_up () {
   ARG=$?
   echo "\nCleaning up..."
@@ -29,13 +33,14 @@ ELECTION=$1
 TABLE="voters_${ELECTION}_${DATE}"
 
 echo "Setting up data types (okay if this fails)..."
-psql $DATABASE_URL << EOM
+db -v ON_ERROR_STOP=0 << EOM
 CREATE TYPE BallotStyle AS ENUM ('MAILED', 'IN PERSON', 'ELECTRONIC');
 EOM
 
 echo "Creating table: $TABLE..."
-psql $DATABASE_URL << EOM
-DROP TABLE IF EXISTS $TABLE;
+db << EOM
+DROP TABLE IF EXISTS ${TABLE}_old;
+ALTER TABLE IF EXISTS $TABLE RENAME TO ${TABLE}_old;
 CREATE TABLE $TABLE (
   "County" text,
   "Voter Registration #" integer,
@@ -86,14 +91,13 @@ pv STATEWIDE.csv   | # display a progress indicator
   grep -ax '.*'    | # filter out non-ascii stuff altogether since i still had errors after the iconv
   psql $DATABASE_URL -c "COPY $TABLE FROM STDIN DELIMITER ',' CSV HEADER;"
 
-echo "Updating derived tables (disregard errors about the materialized view already existing)..."
-psql $DATABASE_URL << EOM
+echo "Updating derived tables..."
+db << EOM
 REFRESH MATERIALIZED VIEW CONCURRENTLY all_voters;
 CREATE OR REPLACE VIEW voters_${ELECTION}_current AS
   SELECT * FROM $TABLE;
 
--- this will (intentionally) fail if the table already exists
-CREATE MATERIALIZED VIEW current_status_${ELECTION} AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS current_status_${ELECTION} AS
   SELECT DISTINCT ON("Voter Registration #")
     "County",
     "Voter Registration #",
@@ -111,12 +115,11 @@ CREATE MATERIALIZED VIEW current_status_${ELECTION} AS
            "Ballot Issued Date" DESC,
            "Application Date" DESC;
 
-CREATE UNIQUE INDEX voter_reg_idx_${ELECTION} ON current_status_${ELECTION} ( "Voter Registration #" );
+CREATE UNIQUE INDEX IF NOT EXISTS voter_reg_idx_${ELECTION} ON current_status_${ELECTION} ( "Voter Registration #" );
 
 REFRESH MATERIALIZED VIEW CONCURRENTLY current_status_${ELECTION};
 
--- this will (intentionally) fail if the table already exists
-CREATE MATERIALIZED VIEW voter_status_counters_$ELECTION AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS voter_status_counters_$ELECTION AS
   SELECT
     CASE WHEN grouping("Application Status") = 1 THEN 'total' ELSE "Application Status" END AS "Application Status",
     CASE WHEN grouping("Ballot Status") = 1 THEN 'total' ELSE "Ballot Status" END AS "Ballot Status",
