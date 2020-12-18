@@ -48,7 +48,7 @@ body {
   flex-shrink: 0;
 }
 
-label {
+.form-row label {
   font-weight: bold;
 }
 

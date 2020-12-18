@@ -11,7 +11,7 @@ import pytz
 from analytics import statsd
 from models import db
 from models.voters import VoteRecord
-from data import statewide_by_day
+from data import statewide_by_party_day
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -52,8 +52,8 @@ def index():
         / (60 * 60 * 24)
     )
 
-    data = statewide_by_day()
-    current_data = data[min(data.keys())]
+    data = statewide_by_party_day()
+    current_data = data['combined'][min(data['combined'].keys())]
 
     resp = make_response(
         render_template(
