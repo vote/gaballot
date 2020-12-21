@@ -76,7 +76,11 @@
       },
       y: {
         lines: [
-          { value: 4015475, text: "4,015,475 Early Votes Cast In General" },
+          {
+            value: 4015475,
+            text: "4,015,475 Early Votes Cast In General",
+            position: 'middle'
+          },
         ],
       },
     },
