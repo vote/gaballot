@@ -1,8 +1,10 @@
 .DS_Store
+.*.swp
 __pycache__
 *.csv
 *.zip
 docker-compose-prod.yml
+2020.TXT
 
 # Custom
 .env

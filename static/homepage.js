@@ -61,6 +61,7 @@
       y: {
         label: "Votes Cast",
         min: 0,
+        max: 4000000,
         padding: {
           top: 20,
           bottom: 0
@@ -103,6 +104,7 @@
           'combinedRunoff'
         ]
       });
+      graph.axis.max(undefined);
     } else {
       graph.load({
         columns: [
@@ -117,6 +119,7 @@
           'repRunoff'
         ]
       });
+      graph.axis.max(4000000);
     }
   });
 })();

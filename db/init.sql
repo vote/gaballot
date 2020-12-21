@@ -302,6 +302,9 @@ FROM (
 GROUP BY county, party, days_before
 ORDER BY days_before DESC;
 
+CREATE UNIQUE INDEX IF NOT EXISTS stats_by_party_county_index ON stats_by_county_party_day (party, county, days_before);
+CREATE INDEX IF NOT EXISTS stats_by_day_party_index ON stats_by_county_party_day (days_before);
+
 CREATE OR REPLACE VIEW cumulative_stats_by_party_day AS
   SELECT * FROM (
     SELECT DISTINCT ON (party, days_before)
