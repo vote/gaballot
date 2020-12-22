@@ -18,6 +18,10 @@
             runoff. Help us catch up!</p>
           </p>
           <div id="homepage-graph"></div>
+          <label>
+            <input type="checkbox" id="partisan-toggle" />
+            Show results by partisan affiliation of voters.
+          </label>
       </div>
     </div>
 
@@ -164,5 +168,5 @@
 <script type="text/javascript">
 window.HOMEPAGE_GRAPH_DATA = {{ data|tojson }}
 </script>
-<script src="/static/homepage.js" type="text/javascript"></script>
+<script src="/static/homepage.js?1" type="text/javascript"></script>
 {% endblock %}

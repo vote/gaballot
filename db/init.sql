@@ -205,5 +205,120 @@ CREATE OR REPLACE VIEW cumulative_stats_by_county AS
   ) q
   WHERE days_before <= 90 AND days_before >= 0;
 
-INSERT INTO updated_times VALUES ('35209', now(), now());
-INSERT INTO updated_times VALUES ('35211', now(), now());
+-- these statements are not idempotent
+--INSERT INTO updated_times VALUES ('35209', now(), now());
+--INSERT INTO updated_times VALUES ('35211', now(), now());
+
+CREATE TABLE IF NOT EXISTS voter_history_2020 (
+  "County" integer,
+  "Voter Registration #" integer,
+  "Election Date" date,
+  "Election Type" varchar(3),
+  "Party" varchar(2),
+  "Absentee" boolean,
+  "Provisional" boolean,
+  "Supplemental" boolean
+);
+CREATE INDEX IF NOT EXISTS voter_history_reg_idx
+  ON voter_history_2020 ("Voter Registration #");
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS stats_by_county_party_day AS
+SELECT "County" as county, party, days_before,
+  sum(("Application Status" = 'A' AND
+        what = 'apply_general')::integer) as applied_general,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_general' AND
+        "Ballot Style" = 'MAILED')::integer) as mailed_general,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_general' AND
+        "Ballot Style" = 'IN PERSON')::integer) as in_person_general,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_general')::integer) as total_returned_general,
+  sum(("Application Status" = 'A' AND
+        what = 'apply_special')::integer) as applied_special,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_special' AND
+        "Ballot Style" = 'MAILED')::integer) as mailed_special,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_special' AND
+        "Ballot Style" = 'IN PERSON')::integer) as in_person_special,
+  sum(("Ballot Status" = 'A' AND
+        what = 'return_special')::integer) as total_returned_special
+FROM (
+  (
+    SELECT DISTINCT ON ("Voter Registration #")
+      "Application Date" as date,
+      ('2020-11-03' - "Application Date") as days_before,
+      'apply_general' as what,
+      "County",
+      "Voter Registration #",
+      "Application Status",
+      "Ballot Status",
+      "Status Reason",
+      "Application Date",
+      "Ballot Issued Date",
+      "Ballot Return Date",
+      "Ballot Style"
+    FROM voters_35209_current
+    ORDER BY "Voter Registration #",
+            "Application Status" != 'A', -- sort successful applications first
+            "Application Date" -- look for the EARLIEST application
+  ) UNION ALL (
+    SELECT "Ballot Return Date" as date,
+      ('2020-11-03' - "Ballot Return Date") as days_before,
+      'return_general' as what, *
+    FROM current_status_35209
+  ) UNION ALL (
+    SELECT DISTINCT ON ("Voter Registration #")
+      "Application Date" as date,
+      ('2021-01-05' - "Application Date") as days_before,
+      'apply_special' as what,
+      "County",
+      "Voter Registration #",
+      "Application Status",
+      "Ballot Status",
+      "Status Reason",
+      "Application Date",
+      "Ballot Issued Date",
+      "Ballot Return Date",
+      "Ballot Style"
+    FROM voters_35211_current
+    ORDER BY "Voter Registration #",
+            "Application Status" != 'A', -- sort successful applications first
+            "Application Date" -- look for the EARLIEST application
+  ) UNION ALL (
+    SELECT "Ballot Return Date" as date,
+      ('2021-01-05' - "Ballot Return Date") as days_before,
+      'return_special' as what, *
+    FROM current_status_35211
+  )
+) q1 LEFT JOIN (
+  SELECT DISTINCT ON("Voter Registration #")
+    "Voter Registration #", "Party" as party
+  FROM voter_history_2020
+  WHERE "Party" != ''
+  ORDER BY "Voter Registration #", "Election Date" DESC
+) q2 using ("Voter Registration #")
+GROUP BY county, party, days_before
+ORDER BY days_before DESC;
+
+CREATE UNIQUE INDEX IF NOT EXISTS stats_by_party_county_index ON stats_by_county_party_day (party, county, days_before);
+CREATE INDEX IF NOT EXISTS stats_by_day_party_index ON stats_by_county_party_day (days_before);
+
+CREATE OR REPLACE VIEW cumulative_stats_by_party_day AS
+  SELECT * FROM (
+    SELECT DISTINCT ON (party, days_before)
+      party, days_before,
+      sum(applied_general) OVER w AS applied_general,
+      sum(mailed_general) OVER w AS mailed_general,
+      sum(in_person_general) OVER w AS in_person_general,
+      sum(total_returned_general) OVER w AS total_returned_general,
+      sum(applied_special) OVER w AS applied_special,
+      sum(mailed_special) OVER w AS mailed_special,
+      sum(in_person_special) OVER w AS in_person_special,
+      sum(total_returned_special) OVER w AS total_returned_special
+    FROM stats_by_county_party_day
+    WINDOW w AS (PARTITION BY party ORDER BY days_before DESC)
+    ORDER BY days_before DESC
+  ) q
+  WHERE days_before <= 90 AND days_before >= 0;
