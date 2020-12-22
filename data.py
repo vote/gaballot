@@ -17,6 +17,7 @@ def statewide_by_day():
 
     return results
 
+
 def statewide_by_party_day():
     sql = """
         SELECT * FROM cumulative_stats_by_party_day
@@ -24,16 +25,21 @@ def statewide_by_party_day():
     """
 
     results = {}
-    results['combined'] = {}
+    results["combined"] = {}
     for result in db.engine.execute(text(sql)):
-        results.setdefault(result['party'] or '', {})[result['days_before']] = {
+        results.setdefault(result["party"] or "U", {})[result["days_before"]] = {
             "total_general": int(result["total_returned_general"]),
             "total_special": int(result["total_returned_special"]),
         }
-        results['combined'].setdefault(result['days_before'], {
-            'total_general': 0, 'total_special': 0
-        })
-        results['combined'][result['days_before']]['total_general'] += int(result["total_returned_general"])
-        results['combined'][result['days_before']]['total_special'] += int(result["total_returned_special"])
+        results["combined"].setdefault(
+            result["days_before"], {"total_general": 0, "total_special": 0}
+        )
+        results["combined"][result["days_before"]]["total_general"] += int(
+            result["total_returned_general"]
+        )
+        results["combined"][result["days_before"]]["total_special"] += int(
+            result["total_returned_special"]
+        )
 
+    print(results, flush=True)
     return results
