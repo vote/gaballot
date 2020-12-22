@@ -41,5 +41,4 @@ def statewide_by_party_day():
             result["total_returned_special"]
         )
 
-    print(results, flush=True)
     return results
