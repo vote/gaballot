@@ -27,7 +27,12 @@ def statewide_by_party_day():
     results = {}
     results["combined"] = {}
     for result in db.engine.execute(text(sql)):
-        results.setdefault(result["party"] or "U", {})[result["days_before"]] = {
+        if result["party"] in ("D", "R"):
+            party = result["party"]
+        else:
+            party = "U"
+
+        results.setdefault(party, {})[result["days_before"]] = {
             "total_general": int(result["total_returned_general"]),
             "total_special": int(result["total_returned_special"]),
         }
