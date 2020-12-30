@@ -84,7 +84,7 @@
     },
     grid: {
       x: {
-        lines: [{ value: -23, text: "In person early voting starts" }],
+        lines: [{ value: -23, text: "In person early voting starts", position: "middle" }],
       },
       y: {
         lines: [
