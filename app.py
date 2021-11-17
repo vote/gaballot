@@ -8,7 +8,7 @@ from flask import Flask, make_response, render_template, request
 from sentry_sdk.integrations.flask import FlaskIntegration
 import pytz
 
-from analytics import statsd
+# from analytics import statsd
 from models import db
 from models.voters import VoteRecord
 from data import statewide_by_party_day
@@ -83,7 +83,7 @@ def faq():
 @app.route("/search", methods=["GET"])
 def search():
     if request.values.get("first") and request.values.get("last"):
-        statsd.increment("ga.lookup.name")
+        # statsd.increment("ga.lookup.name")
         logging.info("Handling request by first/last")
         first = request.values["first"].strip().upper().replace(",", "")
         last = request.values["last"].strip().upper().replace(",", "")
@@ -94,7 +94,7 @@ def search():
         records = VoteRecord.lookup(last, first, middle, city, county, 26)
 
         if len(records) == 0:
-            statsd.increment("ga.lookup.no_results")
+            # statsd.increment("ga.lookup.no_results")
             logging.info("Voter ID query by first/last returned no results")
             return render_template_nocache(
                 "no-res-name.html",
@@ -105,7 +105,7 @@ def search():
                 city=city,
             )
         else:
-            statsd.increment("ga.lookup.success")
+            # statsd.increment("ga.lookup.success")
             logging.info("Voter ID query by first/last returned results")
             return render_template_nocache(
                 "res-name.html",
@@ -120,7 +120,7 @@ def search():
             )
 
     logging.info("Invalid request")
-    statsd.increment("ga.lookup.invalid_request")
+    # statsd.increment("ga.lookup.invalid_request")
     return render_template_nocache(
         "error.html",
         msg="Please make sure to fill out all form fields.",
