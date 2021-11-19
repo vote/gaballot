@@ -22,6 +22,8 @@ To refresh the data, download and replace those two zip files, then run step 2 a
 
 If you'd like to cleanup the python code formatting, run `make format`
 
-## Deploying to Heroku
+## Deploy
+
+GA Ballot is hosted on Heroku. It can be deployed with one click in the Herkou UI. The database is a Heroku add-on for convenience.
 
 Due to Heroku's poor support for Pipenv, if you change the requirements inside Pipfile you must run `make lockdeps` to update `requirements.txt`.
